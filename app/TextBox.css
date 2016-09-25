@@ -1,0 +1,26 @@
+
+@import "colors.css";
+
+.TextBox {
+  min-height: 100vh;
+}
+
+.Text {
+  font-size: 2rem;
+  color: $c-green1;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  &:after {
+    animation: blink-animation 2s steps(2, start) infinite;
+    content: "\002588";
+  }
+  &.Text--isTyping:after {
+    animation: none;
+  }
+}
+
+@keyframes blink-animation {
+  to {
+    visibility: hidden;
+  }
+}

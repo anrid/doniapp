@@ -1,0 +1,25 @@
+
+@import "colors.css";
+
+html {
+  height: 100%;
+  font-family: "Droid Sans", verdana, helvetica, sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  body {
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+    * {
+      box-sizing: border-box;
+    }
+  }
+}
+
+#app {
+  height: 100vh;
+  overflow: auto;
+  padding: 2rem;
+  background-color: white;
+  color: $c-green1;
+}
