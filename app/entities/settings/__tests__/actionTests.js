@@ -41,7 +41,7 @@ Test('Login test', function (t) {
 })
 
 Test('Logout test — The MockStore way', function (t) {
-  t.plan(3)
+  t.plan(4)
 
   const store = mockStore({
     settings: {
@@ -57,6 +57,7 @@ Test('Logout test — The MockStore way', function (t) {
   t.ok(calls[0].type === 'settings/SET_SETTING')
   t.ok(calls[1].type === 'settings/CLEAR_IDENTITY')
   t.ok(calls[2].type === '@@router/CALL_HISTORY_METHOD')
+  t.ok(calls[2].payload.args[0] === '/login')
 })
 
 Test('Logout test — The Sinon way', function (t) {
