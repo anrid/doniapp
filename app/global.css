@@ -16,10 +16,20 @@ html {
   }
 }
 
-#app {
-  height: 100vh;
-  overflow: auto;
-  padding: 2rem;
-  background-color: white;
-  color: $c-green1;
+button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: $c-green1;
+  border: 0;
+  border-radius: 2px;
+  font-size: 1.2rem;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    background-color: color($c-green1 lightness(40%));
+  }
 }

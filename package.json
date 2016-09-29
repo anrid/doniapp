@@ -1,8 +1,9 @@
 {
   "name": "Doni",
   "version": "1.0.0",
-  "description": "Commodore 64 tribute.",
+  "description": "A mobile first app.",
   "main": "index.js",
+  "repository": "git@github.com:anrid/doniapp.git",
   "scripts": {
     "start": "webpack-dev-server --hot --inline --watch --port 8889 --progress --quiet --content-base build/"
   },
@@ -10,7 +11,14 @@
   "license": "ISC",
   "dependencies": {
     "react": "^15.3.1",
-    "react-dom": "^15.3.1"
+    "react-dom": "^15.3.1",
+    "react-redux": "^4.4.5",
+    "react-router": "^2.8.1",
+    "react-router-redux": "^4.0.6",
+    "redux": "^3.6.0",
+    "redux-logger": "^2.6.1",
+    "redux-thunk": "^2.1.0",
+    "updeep": "^0.16.1"
   },
   "devDependencies": {
     "autoprefixer": "^6.4.1",

@@ -1,0 +1,9 @@
+
+@import "../colors.css";
+
+.App {
+  height: 100vh;
+  overflow: auto;
+  background-color: white;
+  color: $c-green1;
+}

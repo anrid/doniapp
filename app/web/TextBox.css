@@ -1,0 +1,41 @@
+
+@import "../colors.css";
+
+.TextBox {
+  min-height: 100vh;
+  background-color: $c-retro-blue3;
+  padding: 2rem;
+}
+
+.Text {
+  font-family: 'C64';
+  font-size: 2rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: $c-retro-blue4;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  &:after {
+    animation: blink-animation 2s steps(2, start) infinite;
+    content: "\002588";
+  }
+  &.Text--isTyping:after {
+    animation: none;
+  }
+}
+
+@keyframes blink-animation {
+  to {
+    visibility: hidden;
+  }
+}
+
+@font-face {
+  font-family: 'Giana';
+  src: url('/fonts/Giana.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'C64';
+  src: url('/fonts/PetMe128.ttf') format('truetype');
+}
