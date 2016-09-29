@@ -58,7 +58,7 @@ export const apiRequest = (topic, payload) =>
     const promise = USE_FAKE_API
       ? fakeApiCall(topic, payload, dispatch)
       : realApiCall()
-    promise.then(() => {
+    return promise.then(() => {
       dispatch(setIsRequestInProgress(false))
     })
   }

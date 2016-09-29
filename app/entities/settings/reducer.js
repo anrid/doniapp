@@ -7,10 +7,7 @@ const initialState = U({
   isConnectedToServer: false,
   isRequestPending: false,
   serverError: null,
-  identity: {
-    email: 'ace@base.se',
-    accessToken: '123456'
-  },
+  identity: null,
   route: null,
   isAppLoading: false
 }, { })
