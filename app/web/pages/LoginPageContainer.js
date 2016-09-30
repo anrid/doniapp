@@ -3,7 +3,7 @@
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
-import Settings from '../entities/settings'
+import Settings from '../../entities/settings'
 import LoginPage from './LoginPage'
 
 function mapStateToProps (state, ownProps) {

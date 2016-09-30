@@ -2,8 +2,11 @@
 @import "colors.css";
 
 html {
+  background-color: $c-p1-gray;
   height: 100%;
-  font-family: "Droid Sans", verdana, helvetica, sans-serif;
+  /* font-family: "Droid Sans", verdana, helvetica, sans-serif; */
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-weight: 300;
   font-size: 13px;
   line-height: 1.5;
   body {

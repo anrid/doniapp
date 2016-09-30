@@ -9,7 +9,8 @@ const initialState = U({
   serverError: null,
   identity: null,
   route: null,
-  isAppLoading: false
+  isAppLoading: false,
+  terminalText: `Hello, world!\nStart typing:\n`
 }, { })
 
 function replaceSettings (state, payload) {

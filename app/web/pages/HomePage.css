@@ -1,0 +1,22 @@
+
+@import "../../colors.css";
+
+.HomePage {
+  min-height: 100px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+
+  &__Header {
+    flex: none;
+    font-size: 3rem;
+  }
+
+  .Menu {
+    flex: 1 1;
+    min-width: 300px;
+  }
+}

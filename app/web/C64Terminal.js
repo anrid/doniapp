@@ -3,9 +3,9 @@
 import React, { Component } from 'react'
 import { findDOMNode } from 'react-dom'
 
-import './TextBox.css'
+import './C64Terminal.css'
 
-export default class TextBox extends Component {
+export default class C64Terminal extends Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -40,6 +40,19 @@ export default class TextBox extends Component {
     }
   }
 
+  parseCommand (text) {
+    const { actions } = this.props
+    const lines = text.split(`\n`)
+    const command = lines[lines.length - 1].trim().toLowerCase()
+    switch (command) {
+      case 'back':
+        actions.goBack()
+        break
+      default:
+        console.log(`Unknown command '${command}'`)
+    }
+  }
+
   handleKeys (e) {
     // console.log('e.key=', e.key)
     let char = e.key
@@ -50,6 +63,7 @@ export default class TextBox extends Component {
       }
       if (e.key === 'Enter') {
         this.setState({ text: text + `\n` })
+        this.parseCommand(text)
       }
       if (e.key === 'Backspace') {
         text = text.length ? text.substr(0, text.length - 1) : ''
@@ -70,11 +84,17 @@ export default class TextBox extends Component {
     }, 500)
   }
 
+  componentWillUnmount () {
+    if (this.isTypingTimer) {
+      clearInterval(this.isTypingTimer)
+    }
+  }
+
   render () {
     const { text, isTyping } = this.state
     return (
-      <div className='TextBox' onClick={this.focus}>
-        <div className={'Text ' + (isTyping ? 'Text--isTyping' : '')}>
+      <div className='C64Terminal' onClick={this.focus}>
+        <div className={'C64Terminal__Text ' + (isTyping ? 'C64Terminal__Text--isTyping' : '')}>
           {text}
         </div>
         <textarea
@@ -89,6 +109,7 @@ export default class TextBox extends Component {
   }
 }
 
-TextBox.propTypes = {
-  text: React.PropTypes.string.isRequired
+C64Terminal.propTypes = {
+  text: React.PropTypes.string.isRequired,
+  actions: React.PropTypes.object.isRequired
 }

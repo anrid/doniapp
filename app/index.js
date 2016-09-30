@@ -17,17 +17,15 @@ import configureStore from './configureStore'
 const store = configureStore()
 
 import App from './web/App'
-import Home from './web/Home'
-import Inbox from './web/Inbox'
-import TextBox from './web/TextBox'
-import LoginPageContainer from './web/LoginPageContainer.js'
+import HomePage from './web/pages/HomePage'
+import LoginPageContainer from './web/pages/LoginPageContainer'
+import SignOutPageContainer from './web/pages/SignOutPageContainer'
+import RetroPageContainer from './web/pages/RetroPageContainer'
+import AboutPage from './web/pages/AboutPage'
 
-const About = () => <div>About Route</div>
-const InboxStats = () => <div>Inbox Stats Route</div>
-const Message = ({ params }) => <div>Message Route with id #{params.id}</div>
-const TextInterface = () => (
-  <TextBox text={`Hello, world!\nStart typing:\n`} />
-)
+import Inbox from './web/misc/Inbox'
+import InboxStatsContainer from './web/misc/InboxStatsContainer'
+import InboxMessageContainer from './web/misc/InboxMessageContainer'
 
 const ErrorPage = ({ location }) => (
   <div>
@@ -43,7 +41,7 @@ function requireCredentials (nextState, replace, next) {
   if (Settings.selectors.isAuthenticated(store.getState())) {
     next()
   } else {
-    replace('/error?message=Nope!')
+    replace('/login')
     next()
   }
 }
@@ -52,13 +50,14 @@ const AppRoot = () => (
   <Provider store={store}>
     <Router history={hashHistory}>
       <Route path='/' component={App} onEnter={requireCredentials}>
-        <IndexRoute component={Home} />
-        <Route path='about' component={About} />
-        <Route path='text' component={TextInterface} />
+        <IndexRoute component={HomePage} />
+        <Route path='about' component={AboutPage} />
+        <Route path='retro' component={RetroPageContainer} />
         <Route path='inbox' component={Inbox}>
-          <IndexRoute component={InboxStats}/>
-          <Route path='messages/:id' component={Message} />
+          <IndexRoute component={InboxStatsContainer}/>
+          <Route path='message/:id' component={InboxMessageContainer} />
         </Route>
+        <Route path='signout' component={SignOutPageContainer} />
       </Route>
       <Route path='/login' component={LoginPageContainer} />
       <Route path='/error' component={ErrorPage} />

@@ -6,8 +6,8 @@
   "repository": "git@github.com:anrid/doniapp.git",
   "scripts": {
     "start": "webpack-dev-server --hot --inline --watch --port 8889 --progress --quiet --content-base build/",
-    "test": "node cli/babel-tape-runner.js app/**/__tests__/*Tests.js",
-    "test-nice": "npm test | faucet"
+    "test-dev": "node cli/babel-tape-runner.js app/**/__tests__/*Tests.js",
+    "test": "npm run test-dev | faucet"
   },
   "author": "Anri Digholm",
   "license": "ISC",
@@ -17,6 +17,7 @@
     "react-redux": "^4.4.5",
     "react-router": "^2.8.1",
     "react-router-redux": "^4.0.6",
+    "react-router-transition": "0.0.6",
     "redux": "^3.6.0",
     "redux-logger": "^2.6.1",
     "redux-thunk": "^2.1.0",

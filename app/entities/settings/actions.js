@@ -94,3 +94,4 @@ export const setIsRequestInProgress = (value) => setSetting('isRequestInProgress
 export const setConnectedToServer = (value) => setSetting('isConnectedToServer', value)
 export const setServerError = (error) => setSetting('serverError', error)
 export const clearError = () => setSetting('serverError', null)
+export const setTerminalText = (text) => setSetting('terminalText', text)
