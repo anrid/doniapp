@@ -13,6 +13,11 @@ import { Provider } from 'react-redux'
 
 import './global.css'
 
+import ApiClient from './lib/apiClient'
+const client = new ApiClient('ws://localhost:4002')
+client.connect()
+client.send('echo', { value: 123 })
+
 import configureStore from './configureStore'
 const store = configureStore()
 

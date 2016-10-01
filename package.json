@@ -5,13 +5,16 @@
   "main": "index.js",
   "repository": "git@github.com:anrid/doniapp.git",
   "scripts": {
-    "start": "webpack-dev-server --hot --inline --watch --port 8889 --progress --quiet --content-base build/",
+    "start": "webpack-dev-server --hot --inline --watch --port 8889 --quiet --content-base build/",
     "test-dev": "node cli/babel-tape-runner.js app/**/__tests__/*Tests.js",
-    "test": "npm run test-dev | faucet"
+    "test": "npm run test-dev | faucet",
+    "api": "nodemon --ext js,html --watch apiServer/ apiServer/index.js",
+    "dev": "concurrently --kill-others --prefix '[{name}]' --names 'BUNDLE,API' -c 'bgBlue.bold,bgMagenta.bold' 'npm run start' 'npm run api'"
   },
   "author": "Anri Digholm",
   "license": "ISC",
   "dependencies": {
+    "express": "^4.14.0",
     "react": "^15.3.1",
     "react-dom": "^15.3.1",
     "react-redux": "^4.4.5",
@@ -21,6 +24,7 @@
     "redux": "^3.6.0",
     "redux-logger": "^2.6.1",
     "redux-thunk": "^2.1.0",
+    "socket.io": "^1.4.8",
     "updeep": "^0.16.1"
   },
   "devDependencies": {
@@ -32,9 +36,11 @@
     "babel-preset-react": "^6.11.1",
     "babel-preset-stage-0": "^6.5.0",
     "babel-register": "^6.16.0",
+    "concurrently": "^3.0.0",
     "css-loader": "^0.25.0",
     "faucet": "0.0.1",
     "glob": "^7.1.0",
+    "nodemon": "^1.10.2",
     "postcss-loader": "^0.13.0",
     "precss": "^1.4.0",
     "redux-mock-store": "^1.2.1",
