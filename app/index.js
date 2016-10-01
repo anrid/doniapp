@@ -13,13 +13,26 @@ import { Provider } from 'react-redux'
 
 import './global.css'
 
+// Setup the API client.
+import Api from './entities/api'
 import ApiClient from './lib/apiClient'
+
 const client = new ApiClient('ws://localhost:4002')
 client.connect()
 client.send('echo', { value: 123 })
 
-import configureStore from './configureStore'
-const store = configureStore()
+// Setup Redux store.
+import configureStore from './lib/configureStore'
+
+const store = configureStore({ middlewares: [
+  // Connect to the API.
+  Api.middleware.createApiClientMiddleware(client)
+]})
+
+// Connect Redux store with our API client.
+client.setListener(data => {
+  store.dispatch(Api.actions.serverMessage(data))
+})
 
 import App from './web/App'
 import HomePage from './web/pages/HomePage'

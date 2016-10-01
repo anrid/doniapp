@@ -8,6 +8,26 @@ export default class ApiClient {
     this.state = this.clearState()
     this.buffer = new Buffer()
     this.processBuffer = this.processBuffer.bind(this)
+    this.handleAck = this.handleAck.bind(this)
+    this.stats = {
+      sent: 0,
+      ack: 0
+    }
+  }
+
+  handleAck (data) {
+    if (data.clientRequestId) {
+      const messages = this.buffer.get()
+      const remainingMessages = messages.filter(x => (
+        x.clientRequestId !== data.clientRequestId
+      ))
+      this.buffer.set(remainingMessages)
+      const filteredOne = remainingMessages.length === messages.length - 1
+      if (filteredOne) {
+        this.stats.ack++
+      }
+      console.log(`API: Stats, ${this.stats.sent} sent, ${this.stats.ack} acknowledged.`)
+    }
   }
 
   processBuffer () {
@@ -15,14 +35,8 @@ export default class ApiClient {
     if (connected && socket) {
       const messages = this.buffer.get()
       if (messages.length) {
-        console.log('Processing message buffer:', messages)
-        socket.emit('clientRequest', messages[0], data => {
-          if (data.clientRequestId) {
-            this.buffer.set(
-              messages.filter(x => x.clientRequestId !== data.clientRequestId)
-            )
-          }
-        })
+        console.log('API: Processing message buffer, messages=', messages)
+        socket.emit('clientRequest', messages[0], this.handleAck)
       }
     }
   }
@@ -39,6 +53,7 @@ export default class ApiClient {
       payload
     })
     this.buffer.set(messages)
+    this.stats.sent++
   }
 
   clearState () {
@@ -49,10 +64,16 @@ export default class ApiClient {
     }
   }
 
+  setListener (listener) {
+    this.listener = listener
+  }
+
   connect () {
-    const socket = window.io.connect('ws://localhost:4002')
+    console.log(`API: Connecting to ${this.url}`)
+    const socket = window.io.connect(this.url)
+
     socket.on('connect', () => {
-      console.log('Socket connected.')
+      console.log('API: Socket connected.')
       this.state.connected = true
 
       // Start processing our message buffer.
@@ -61,7 +82,16 @@ export default class ApiClient {
       }
     })
     socket.on('welcome', data => {
-      console.log('Socket got welcome message:', data)
+      console.log('API: Got welcome message, data=', data)
+    })
+    socket.on('clientRequestError', data => {
+      console.log('API: Error, data=', data)
+    })
+    socket.on('serverMessage', data => {
+      console.log('API: Server message=', data)
+      if (this.listener) {
+        this.listener(data)
+      }
     })
     this.state.socket = socket
   }

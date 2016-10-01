@@ -2,6 +2,7 @@
 
 const USE_FAKE_API = true
 
+import Api from '../api'
 import * as types from './types'
 import { push, goBack as routeBack } from 'react-router-redux'
 
@@ -15,15 +16,14 @@ export const setSettings = (payload) => ({
   payload
 })
 
-export const login = (email, password) => (
-  apiRequest('auth', { email, password })
-)
+export const login = (email, password) => Api.actions.login(email, password)
 
 export const logout = () =>
   (dispatch, getState) => {
     const identity = getState().settings.identity
-    const logoutPayload = { accessToken: identity && identity.accessToken }
-    dispatch(apiRequest('logout', logoutPayload))
+    const accessToken = identity && identity.accessToken
+
+    dispatch(Api.actions.logout(accessToken))
     dispatch({ type: types.CLEAR_IDENTITY })
     dispatch(routeTo('/login'))
   }
@@ -38,7 +38,7 @@ export const loginSuccessful = (payload) =>
 export const loadApp = () =>
   (dispatch, getState) => {
     dispatch(setSetting('isAppLoading', true))
-    apiRequest('app:starter')
+    dispatch(Api.actions.starter())
   }
 
 export const routeTo = (uri) => push(uri)
