@@ -3,8 +3,8 @@
 import Settings from '../settings'
 import * as types from './types'
 
-export const login = (email, password) => (
-  { type: types.LOGIN, topic: 'auth', payload: { email, password } }
+export const login = (email, password) => dispatch => (
+  dispatch({ type: types.LOGIN, topic: 'auth', payload: { email, password } })
 )
 
 export const logout = (accessToken) => (
