@@ -6,8 +6,9 @@
   "repository": "git@github.com:anrid/doniapp.git",
   "scripts": {
     "app": "webpack-dev-server --hot --inline --watch --port 8889 --quiet --content-base build/",
-    "test-dev": "node cli/babel-tape-runner.js app/**/__tests__/*Tests.js",
-    "test": "npm run test-dev | faucet",
+    "test-watch": "tape-watch ./app/**/__tests__/*.js -r babel-register",
+    "test-once": "tape-watch ./app/**/__tests__/*.js -r babel-register --once",
+    "test": "npm run test-once | faucet",
     "api": "nodemon --ext js,html --watch apiServer/ apiServer/index.js",
     "start": "concurrently --kill-others --prefix '[{name}]' --names 'BUNDLE,API' -c 'bgBlue.bold,bgMagenta.bold' 'npm run app' 'npm run api'"
   },
@@ -47,6 +48,7 @@
     "sinon": "^1.17.6",
     "style-loader": "^0.13.1",
     "tape": "^4.6.0",
+    "tape-watch": "^2.2.3",
     "webpack": "^1.13.2",
     "webpack-dev-server": "^1.15.2"
   }
