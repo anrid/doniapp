@@ -45,6 +45,9 @@ import Inbox from './web/misc/Inbox'
 import InboxStatsContainer from './web/misc/InboxStatsContainer'
 import InboxMessageContainer from './web/misc/InboxMessageContainer'
 
+import DemosPageContainer from './web/pages/DemosPageContainer'
+import InputWidgetDemo from './web/misc/InputWidgetDemo'
+
 const ErrorPage = ({ location }) => (
   <div>
     <div>Error Page Route, message: {location.query.message}</div>
@@ -77,8 +80,11 @@ const AppRoot = () => (
         </Route>
         <Route path='signout' component={SignOutPageContainer} />
       </Route>
-      <Route path='/login' component={LoginPageContainer} />
-      <Route path='/error' component={ErrorPage} />
+      <Route path='login' component={LoginPageContainer} />
+      <Route path='error' component={ErrorPage} />
+      <Route path='demos' component={DemosPageContainer}>
+        <Route path='input-widget' component={InputWidgetDemo} />
+      </Route>
     </Router>
   </Provider>
 )

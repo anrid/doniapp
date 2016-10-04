@@ -1,0 +1,140 @@
+
+@import "../../colors.css";
+
+.InputWidget {
+  flex: none;
+  width: 300px;
+  border-radius: 3px;
+  border: 1px solid $c-gray500;
+  background-color: white;
+  box-shadow: 0 1px 1px 0 rgba($c-gray700, 0.5);
+
+  &__SearchBox {
+    position: relative;
+    i.fa {
+      position: absolute;
+      top: 10px;
+      left: 8px;
+      font-size: 0.9rem;
+      color: $c-gray400;
+    }
+    input {
+      padding-left: 26px;
+      height: 31px;
+      width: 100%;
+      padding: 0 8px;
+      font-size: 1rem;
+      font-weight: 400;
+      border-radius: 2px;
+      line-height: 31px;
+      background-color: $c-gray50;
+      border: 1px solid $c-gray300;
+      ::placeholder {
+        font-size: 1rem;
+        font-weight: 400;
+      }
+    }
+  }
+
+  &__Header {
+    padding: 12px 12px 12px 12px;
+    .pl-form__input input, .pl-form__input--with-icon input {
+      min-width: 100%;
+    }
+  }
+
+  &__Footer {
+    flex: none;
+    height: 34px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 0 0 3px 3px;
+    padding: 0 12px;
+    border-top: 1px solid $c-gray50;
+    color: $c-gray600;
+    &__Info {
+      .fa {
+        padding: 0 2px;
+        cursor: pointer;
+        & + .fa {
+          margin-left: 20px;
+        }
+      }
+      font-size: 1rem;
+      color: $c-gray600;
+    }
+  }
+}
+
+.InputWidgetItem {
+  height: 36px;
+  padding: 0 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  cursor: pointer;
+  &:hover {
+    background-color: $c-teal300;
+    color: white;
+    .InputWidgetItem__selected {
+      border: 2px solid white;
+      .fa {
+        color: white;
+      }
+    }
+    .InputWidgetItem__Text__Sub {
+      color: white;
+    }
+  }
+  &:last-child {
+    margin-bottom: 6px;
+  }
+
+  &__Photo {
+    flex: none;
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-color: transparent;
+    border-radius: 3px;
+    box-shadow: 0 0 1px 0 rgba(0,0,0,0.25);
+  }
+
+  &__Text {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: column;
+    flex: 2 2 auto;
+    font-size: 1.1rem;
+    &__Main {
+      line-height: 1.1rem;
+    }
+    &__Sub {
+      font-size: 0.9rem;
+      color: $c-gray400;
+      line-height: 1.1rem;
+      white-space: nowrap;
+      max-width: 190px;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+  }
+
+  &__Selected {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 30px;
+    border: 2px solid $c-gray300;
+    .fa {
+      color: $c-gray300;
+    }
+  }
+}

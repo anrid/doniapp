@@ -36,3 +36,9 @@ button {
     background-color: color($c-green1 lightness(40%));
   }
 }
+
+.unselectable {
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
