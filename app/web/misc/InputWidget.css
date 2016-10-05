@@ -4,10 +4,11 @@
 .InputWidget {
   flex: none;
   width: 300px;
+  height: auto;
   border-radius: 3px;
   border: 1px solid $c-gray500;
   background-color: white;
-  box-shadow: 0 1px 1px 0 rgba($c-gray700, 0.5);
+  box-shadow: 0 1px 1px 0 color($c-gray700 a(50%));
 
   &__SearchBox {
     position: relative;
@@ -19,10 +20,10 @@
       color: $c-gray400;
     }
     input {
+      outline: none;
       padding-left: 26px;
       height: 31px;
       width: 100%;
-      padding: 0 8px;
       font-size: 1rem;
       font-weight: 400;
       border-radius: 2px;

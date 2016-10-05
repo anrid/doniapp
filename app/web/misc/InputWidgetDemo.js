@@ -34,18 +34,29 @@ function generateItem () {
   }
 }
 
+const items = [
+  generateItem(),
+  generateItem(),
+  generateItem(),
+  generateItem(),
+  generateItem(),
+  generateItem(),
+  generateItem()
+]
+
 export default class InputWidgetDemo extends Component {
   render () {
-    console.log('quotes:', quotes)
-    const items = [
-      generateItem(),
-      generateItem(),
-      generateItem()
-    ]
     const onSearch = (...rest) => console.log('onSearch:', rest)
     const onSelect = (...rest) => console.log('onSelect:', rest)
     return (
-      <InputWidget items={items} onSearch={onSearch} onSelect={onSelect} />
+      <div className='DemosPage__Widgets'>
+        <div className='DemosPage__Widget'>
+          <InputWidget items={items.slice(4)} onSearch={onSearch} onSelect={onSelect} />
+        </div>
+        <div className='DemosPage__Widget'>
+          <InputWidget items={items} onSearch={onSearch} onSelect={onSelect} />
+        </div>
+      </div>
     )
   }
 }

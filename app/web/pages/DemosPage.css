@@ -4,19 +4,28 @@
 .DemosPage {
   min-height: 100px;
   padding: 2rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
   min-height: 100vh;
+  display: flex;
+
+  &__Left {
+    width: 200px;
+    height: 100%;
+  }
+
+  &__Main {
+    flex: 1 1;
+    height: 100%;
+  }
 
   &__Header {
-    flex: none;
     font-size: 3rem;
   }
 
-  .Menu {
-    flex: 1 1;
-    min-width: 300px;
+  &__Widgets {
+    display: flex;
+  }
+
+  &__Widget + &__Widget {
+    margin-left: 20px;
   }
 }

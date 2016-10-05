@@ -18,7 +18,7 @@ export default class InputWidget extends Component {
     this._doSearch = debounce(this.props.onSearch, 350)
     this.state = {
       page: 1,
-      max: 6
+      max: 5
     }
     this.onNextPage = this.onNextPage.bind(this)
   }
@@ -50,7 +50,7 @@ export default class InputWidget extends Component {
       <div className='InputWidget__SearchBox'>
         <i className='fa fa-fw fa-search' />
         <input type='text'
-          placeholder='Search for a Consultant'
+          placeholder='Search'
           onChange={this.onSearch}
         />
       </div>
