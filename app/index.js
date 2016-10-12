@@ -1,6 +1,6 @@
 'use strict'
 
-import React from 'react'
+import React, { Component, PropTypes } from 'react'
 import ReactDOM from 'react-dom'
 import {
   Router,
@@ -12,6 +12,8 @@ import {
 import { Provider } from 'react-redux'
 
 import './global.css'
+
+import Storage from './lib/storage'
 
 // Setup the API client.
 import Api from './entities/api'
@@ -67,6 +69,42 @@ function requireCredentials (nextState, replace, next) {
   }
 }
 
+class AppLoader extends Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      isLoading: true
+    }
+  }
+
+  componentDidMount () {
+    Storage.get()
+    .then(data => {
+      if (data) {
+        // Restore saved identity.
+        if (data.savedIdentity) {
+          console.log('Restoring saved identity:', data.savedIdentity.identity)
+          store.dispatch(Settings.actions.loadSavedIdentity(data.savedIdentity.identity))
+        }
+      }
+      setTimeout(() => this.setState({ isLoading: false }), 250)
+    })
+  }
+
+  render () {
+    const { isLoading } = this.state
+    const Root = this.props.root
+    if (isLoading) {
+      return <div>Loading app ..</div>
+    }
+    return <Root />
+  }
+}
+
+AppLoader.propTypes = {
+  root: PropTypes.any.isRequired
+}
+
 const AppRoot = () => (
   <Provider store={store}>
     <Router history={hashHistory}>
@@ -90,6 +128,6 @@ const AppRoot = () => (
 )
 
 ReactDOM.render(
-  <AppRoot />,
+  <AppLoader root={AppRoot} />,
   document.getElementById('reactapp')
 )

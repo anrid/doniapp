@@ -67,6 +67,8 @@ function serverMessage (topic, payload, socket) {
 }
 
 const topicToActionMap = {
+  'echo': (data, socket) => serverMessage('echo', { echo: data }, socket),
+  'signout': (data, socket) => console.log('Perform signout:', data),
   'auth': handleAuth,
   'app:starter': handleAppStarter
 }

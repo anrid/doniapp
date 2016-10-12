@@ -23,6 +23,8 @@ export const serverMessage = (data) =>
         return dispatch(Settings.actions.loginSuccessful(data.payload))
       case 'app:starter':
         return dispatch(Settings.actions.setSettings(data.payload))
+      case 'echo':
+        return console.log('Got echo from server:', data.payload.echo)
       default:
         console.error('Unhandled server message:', data)
     }
