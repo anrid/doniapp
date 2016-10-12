@@ -1,12 +1,22 @@
 
-@import "../../colors.css";
+@import '../../colors.css';
 
 .Inbox {
   min-height: 100px;
   padding: 2rem;
 
   &__Header {
-    font-size: 1.5rem;
+    font-size: 4rem;
+    font-weight: 600;
+  }
+
+  &__StatsText {
+    font-size: 3rem;
+    font-weight: 400;
+  }
+
+  &__Message {
+    font-size: 2rem;
   }
 
   &__MessageLinks {
@@ -14,8 +24,9 @@
       display: flex;
       justify-content: flex-start;
       align-items: center;
-      font-size: 1rem;
+      font-size: 2rem;
       text-decoration: none;
+      color: white;
       &:hover {
         text-decoration: underline;
       }

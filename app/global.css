@@ -1,39 +1,69 @@
 
-@import "colors.css";
+@import 'colors.css';
 
 html {
   background-color: $c-p1-gray;
-  height: 100%;
-  /* font-family: "Droid Sans", verdana, helvetica, sans-serif; */
-  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  /* font-family: 'Droid Sans', verdana, helvetica, sans-serif; */
+  font-family: 'Open Sans', 'HelveticaNeue-Light', 'Helvetica Neue Light', 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif;
   font-weight: 300;
   font-size: 13px;
   line-height: 1.5;
   body {
-    min-height: 100%;
+    min-height: 100vh;
     margin: 0;
     padding: 0;
     * {
       box-sizing: border-box;
     }
+    input, select, textarea {
+      font-family: 'Open Sans', 'HelveticaNeue-Light', 'Helvetica Neue Light', 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif;
+    }
   }
 }
+
+/* Gradients */
+.SkyGradient01 { background: linear-gradient(to bottom, #020111 85%,#191621 100%); }
+.SkyGradient02 { background: linear-gradient(to bottom, #020111 60%,#20202c 100%); }
+.SkyGradient03 { background: linear-gradient(to bottom, #020111 10%,#3a3a52 100%); }
+.SkyGradient04 { background: linear-gradient(to bottom, #20202c 0%,#515175 100%); }
+.SkyGradient05 { background: linear-gradient(to bottom, #40405c 0%,#6f71aa 80%,#8a76ab 100%); }
+.SkyGradient06 { background: linear-gradient(to bottom, #4a4969 0%,#7072ab 50%,#cd82a0 100%); }
+.SkyGradient07 { background: linear-gradient(to bottom, #757abf 0%,#8583be 60%,#eab0d1 100%); }
+.SkyGradient08 { background: linear-gradient(to bottom, #82addb 0%,#ebb2b1 100%); }
+.SkyGradient09 { background: linear-gradient(to bottom, #94c5f8 1%,#a6e6ff 70%,#b1b5ea 100%); }
+.SkyGradient10 { background: linear-gradient(to bottom, #b7eaff 0%,#94dfff 100%); }
+.SkyGradient11 { background: linear-gradient(to bottom, #9be2fe 0%,#67d1fb 100%); }
+.SkyGradient12 { background: linear-gradient(to bottom, #90dffe 0%,#38a3d1 100%); }
+.SkyGradient13 { background: linear-gradient(to top, #57c1eb 0%,#246fa8 100%); }
+.SkyGradient14 { background: linear-gradient(to bottom, #2d91c2 0%,#1e528e 100%); }
+.SkyGradient15 { background: linear-gradient(to bottom, #2473ab 0%,#1e528e 70%,#5b7983 100%); }
+.SkyGradient16 { background: linear-gradient(to bottom, #1e528e 0%,#265889 50%,#9da671 100%); }
+.SkyGradient17 { background: linear-gradient(to bottom, #1e528e 0%,#728a7c 50%,#e9ce5d 100%); }
+.SkyGradient18 { background: linear-gradient(to bottom, #154277 0%,#576e71 30%,#e1c45e 70%,#b26339 100%); }
+.SkyGradient19 { background: linear-gradient(to bottom, #163C52 0%,#4F4F47 30%,#C5752D 60%,#B7490F 80%, #2F1107 100%); }
+.SkyGradient20 { background: linear-gradient(to bottom, #071B26 0%,#071B26 30%,#8A3B12 80%,#240E03 100%); }
+.SkyGradient21 { background: linear-gradient(to bottom, #010A10 30%,#59230B 80%,#2F1107 100%); }
+.SkyGradient22 { background: linear-gradient(to bottom, #090401 50%,#4B1D06 100%); }
+.SkyGradient23 { background: linear-gradient(to bottom, #00000c 80%,#150800 100%); }
 
 button {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 10px 20px;
-  background-color: $c-green1;
+  padding: 0 2rem;
+  background-color: $c-blue600;
   border: 0;
   border-radius: 2px;
-  font-size: 1.2rem;
+  font-size: 2rem;
+  line-height: 2;
+  text-shadow: 0 1px 1px rgba(0,0,0,0.5);
+  letter-spacing: 1px;
   color: white;
   font-weight: 600;
   cursor: pointer;
 
   &:hover {
-    background-color: color($c-green1 lightness(40%));
+    background-color: $c-blue400;
   }
 }
 

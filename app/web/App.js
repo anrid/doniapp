@@ -8,7 +8,7 @@ class App extends Component {
   render () {
     const { children } = this.props
     return (
-      <div className='App'>
+      <div className='App SkyGradient13'>
         {children}
       </div>
     )

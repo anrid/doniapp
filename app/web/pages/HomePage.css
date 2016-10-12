@@ -1,8 +1,7 @@
 
-@import "../../colors.css";
+@import '../../colors.css';
 
 .HomePage {
-  min-height: 100px;
   padding: 2rem;
   display: flex;
   flex-direction: column;
@@ -11,12 +10,14 @@
   min-height: 100vh;
 
   &__Header {
+    @extend fat-header;
     flex: none;
-    font-size: 3rem;
+    font-size: 4rem;
+    font-weight: 600;
   }
 
   .Menu {
     flex: 1 1;
-    min-width: 300px;
+    min-width: 450px;
   }
 }

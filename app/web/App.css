@@ -1,9 +1,11 @@
 
-@import "../colors.css";
+@import '../colors.css';
 
 .App {
-  height: 100vh;
-  overflow: auto;
+  min-height: 100vh;
+  max-height: 100vh;
   background-color: white;
-  color: $c-green1;
+  color: white;
+  text-shadow: 0 1px 1px rgba(50,50,50,0.7);
+  overflow: hidden;
 }

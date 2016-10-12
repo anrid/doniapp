@@ -24,16 +24,20 @@ class LoginPage extends Component {
 
     return (
       <RouteTransition pathname='login' {...presets.slideRight}>
-        <div className='LoginPage'>
+        <div className='LoginPage SkyGradient11'>
           <div className='LoginPage__Header'>Stay a while, and listen.</div>
           <div className='LoginPage__Form'>
             <div className='LoginPage__FormField'>
-              <label>Email</label>
-              <input type='email' value={email} onChange={(e) => this.onChange('email', e.target.value)} />
+              <input type='email' value={email}
+                onChange={(e) => this.onChange('email', e.target.value)}
+                placeholder='who@am.i' spellCheck='false'
+              />
             </div>
             <div className='LoginPage__FormField'>
-              <label>Password</label>
-              <input type='password' value={password} onChange={(e) => this.onChange('password', e.target.value)} />
+              <input type='password' value={password}
+                onChange={(e) => this.onChange('password', e.target.value)}
+                placeholder='Password'
+              />
             </div>
           </div>
           <div className='LoginPage__Buttons'>

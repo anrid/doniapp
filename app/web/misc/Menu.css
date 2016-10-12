@@ -1,23 +1,24 @@
 
-@import "../../colors.css";
+@import '../../colors.css';
 
 .Menu {
   flex: 1 1;
-  min-width: 300px;
+  min-width: 600px;
 }
 
 .MenuItem {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
   font-weight: 600;
-  font-size: 2rem;
+  font-size: 3rem;
   text-decoration: none;
-  color: $c-p1-green;
-  min-width: 50px;
+  color: $c-gray50;
   border-radius: 3px;
-  background-color: $c-green1;
+  background-color: color($c-gray1 a(50%));
+  &:hover {
+    background-color: color($c-gray1 a(50%) lightness(20%));
+  }
   & + & {
     margin-top: 4px;
   }

@@ -1,5 +1,5 @@
 
-@import "../colors.css";
+@import '../colors.css';
 
 .C64Terminal {
   min-height: 100vh;
@@ -14,9 +14,10 @@
     color: $c-retro-blue4;
     white-space: pre-wrap;
     word-wrap: break-word;
+    text-shadow: none;
     &:after {
       animation: blink-animation 2s steps(2, start) infinite;
-      content: "\002588";
+      content: '\002588';
     }
     &.C64Terminal__Text--isTyping:after {
       animation: none;

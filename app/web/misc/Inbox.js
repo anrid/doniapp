@@ -24,9 +24,9 @@ export default class Inbox extends Component {
 
 export const InboxStats = ({ messages }) => (
   <div className='Inbox__Stats'>
-    <div>Neat Inbox Stats:</div>
-    <div>Messages: {messages.length}</div>
-    <div>Unread: {messages.filter(x => x.read === false).length}</div>
+    <div className='Inbox__StatsText'>Neat Inbox Stats:</div>
+    <div className='Inbox__StatsText'>Messages: {messages.length}</div>
+    <div className='Inbox__StatsText'>Unread: {messages.filter(x => x.read === false).length}</div>
     <div className='Inbox__MessageLinks'>
       {messages.map(x => (
         <Link key={x.id} to={`/inbox/message/${x.id}`}>Show Message #{x.id}</Link>
