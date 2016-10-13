@@ -62,4 +62,54 @@ export const setIsRequestInProgress = (value) => setSetting('isRequestInProgress
 export const setConnectedToServer = (value) => setSetting('isConnectedToServer', value)
 export const setServerError = (error) => setSetting('serverError', error)
 export const clearError = () => setSetting('serverError', null)
+
 export const setTerminalText = (text) => setSetting('terminalText', text)
+export const setTerminalBuffer = (text) => setSetting('terminalBuffer', text)
+export const setTerminalIsTyping = (value) => setSetting('terminalIsTyping', value)
+
+export const writeTextToTerminal = (text, reset = false) =>
+  (dispatch, getState) => {
+    const current = getState().settings.terminalText
+    const payload = { }
+    if (reset) {
+      payload.terminalBuffer = ''
+      payload.terminalText = text
+    } else {
+      payload.terminalText = current + text
+    }
+    dispatch({
+      type: types.SET_SETTING,
+      payload
+    })
+    dispatch(terminalPrintLoop())
+  }
+
+export const updateTerminal = (text) => ({
+  type: types.SET_SETTING,
+  payload: {
+    terminalText: text,
+    terminalBuffer: text,
+    terminalIsTyping: true
+  }
+})
+
+const terminalPrintSpeed = 1000 / 60
+export const terminalPrintLoop = () =>
+  (dispatch, getState) => {
+    const { terminalText, terminalBuffer, terminalIsTyping } = getState().settings
+    if (terminalText !== terminalBuffer) {
+      const nextBuffer = terminalText.substr(0, terminalBuffer.length + 1)
+      dispatch({
+        type: types.SET_SETTING,
+        payload: {
+          terminalBuffer: nextBuffer,
+          terminalIsTyping: true
+        }
+      })
+
+      const delay = Math.floor(Math.random() * terminalPrintSpeed) + terminalPrintSpeed
+      setTimeout(() => dispatch(terminalPrintLoop()), delay)
+    } else if (terminalIsTyping) {
+      dispatch(setTerminalIsTyping(false))
+    }
+  }

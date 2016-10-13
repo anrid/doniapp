@@ -10,6 +10,10 @@ const io = require('socket.io')(server)
 const PORT = 4002
 const VERSION = process.env.npm_package_version
 
+const serverData = {
+  counter: 0
+}
+
 server.listen(4002, () => console.log(`
   API server running.
   Port:    ${PORT}
@@ -66,11 +70,19 @@ function serverMessage (topic, payload, socket) {
   socket.emit('serverMessage', { topic, payload })
 }
 
+// Big ol’ topic map !
 const topicToActionMap = {
   'echo': (data, socket) => serverMessage('echo', { echo: data }, socket),
   'signout': (data, socket) => console.log('Perform signout:', data),
+  'server:update:counter': handleServerUpdateCounter,
   'auth': handleAuth,
   'app:starter': handleAppStarter
+}
+
+// Just for fun.
+function handleServerUpdateCounter ({ value }, socket) {
+  serverData.counter += value
+  serverMessage('server:update:counter', { value: serverData.counter }, socket)
 }
 
 // Handle topic 'auth'

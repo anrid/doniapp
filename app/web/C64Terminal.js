@@ -1,6 +1,6 @@
 'use strict'
 
-import React, { Component } from 'react'
+import React, { Component, PropTypes } from 'react'
 import { findDOMNode } from 'react-dom'
 
 import './C64Terminal.css'
@@ -8,36 +8,17 @@ import './C64Terminal.css'
 export default class C64Terminal extends Component {
   constructor (props) {
     super(props)
-    this.state = {
-      text: '',
-      isTyping: false
-    }
-    this.printText = this.printText.bind(this)
     this.handleKeys = this.handleKeys.bind(this)
     this.focus = this.focus.bind(this)
   }
+
   componentDidMount () {
     this.focus()
-    setTimeout(this.printText, 500)
+    this.props.actions.settings.terminalPrintLoop()
   }
 
   focus () {
     findDOMNode(this.refs.input).focus()
-  }
-
-  printText () {
-    const typeSpeed = 1000 / 60
-    const from = this.props.text
-    const to = this.state.text
-    if (from !== to) {
-      this.setState({
-        text: from.substr(0, to.length + 1),
-        isTyping: true
-      })
-      setTimeout(this.printText, Math.floor(Math.random() * typeSpeed) + typeSpeed)
-    } else if (this.state.isTyping) {
-      this.setState({ isTyping: false })
-    }
   }
 
   parseCommand (text) {
@@ -46,8 +27,24 @@ export default class C64Terminal extends Component {
     const command = lines[lines.length - 1].trim().toLowerCase()
     switch (command) {
       case 'back':
-        actions.goBack()
+        actions.settings.goBack()
         break
+      case 'bump':
+        actions.api.updateServerCounter()
+        break
+      case 'clear':
+        actions.settings.writeTextToTerminal(`Clear your mind. Start typing:\n`, true)
+        break
+      case 'help':
+        actions.settings.writeTextToTerminal(
+          `Available commands are:\n` +
+          `bump    - Update server counter and get latest value.\n` +
+          `clear   - Clear the terminal.\n` +
+          `help    - This command, obviously.\n` +
+          `back    - Go on and git !\n\n`
+        )
+        break
+
       default:
         console.log(`Unknown command '${command}'`)
     }
@@ -55,47 +52,42 @@ export default class C64Terminal extends Component {
 
   handleKeys (e) {
     // console.log('e.key=', e.key)
+    const { updateTerminal, setTerminalIsTyping } = this.props.actions.settings
+    const { buffer } = this.props
+
     let char = e.key
-    let text = this.state.text
     if (e.key.length > 1) {
       if (e.key === 'Tab') {
-        this.setState({ text: text + '  ' })
+        updateTerminal(buffer + '  ')
       }
       if (e.key === 'Enter') {
-        this.setState({ text: text + `\n` })
-        this.parseCommand(text)
+        updateTerminal(buffer + `\n`)
+        this.parseCommand(buffer)
       }
       if (e.key === 'Backspace') {
-        text = text.length ? text.substr(0, text.length - 1) : ''
-        this.setState({ text })
+        updateTerminal(buffer.length ? buffer.substr(0, buffer.length - 1) : '')
       }
       e.stopPropagation()
       e.preventDefault()
     } else {
-      this.setState({ text: text + char })
+      updateTerminal(buffer + char)
     }
 
-    this.setState({ isTyping: true })
+    // Turn off terminalIsTyping flag within 500 ms.
     if (this.isTypingTimer) {
       clearInterval(this.isTypingTimer)
     }
     this.isTypingTimer = setTimeout(() => {
-      this.setState({ isTyping: false })
+      setTerminalIsTyping(false)
     }, 500)
   }
 
-  componentWillUnmount () {
-    if (this.isTypingTimer) {
-      clearInterval(this.isTypingTimer)
-    }
-  }
-
   render () {
-    const { text, isTyping } = this.state
+    const { buffer, isTyping } = this.props
     return (
       <div className='C64Terminal' onClick={this.focus}>
         <div className={'C64Terminal__Text ' + (isTyping ? 'C64Terminal__Text--isTyping' : '')}>
-          {text}
+          {buffer}
         </div>
         <textarea
           type='text'
@@ -110,6 +102,8 @@ export default class C64Terminal extends Component {
 }
 
 C64Terminal.propTypes = {
-  text: React.PropTypes.string.isRequired,
+  text: PropTypes.string.isRequired,
+  buffer: PropTypes.string.isRequired,
+  isTyping: PropTypes.bool,
   actions: React.PropTypes.object.isRequired
 }

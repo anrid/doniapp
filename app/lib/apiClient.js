@@ -31,13 +31,20 @@ export default class ApiClient {
   }
 
   processBuffer () {
-    const { connected, socket } = this.state
-    if (connected && socket) {
+    const { connected } = this.state
+    if (connected) {
       const messages = this.buffer.get()
       if (messages.length) {
         console.log('API: Processing message buffer, messages=', messages)
-        socket.emit('clientRequest', messages[0], this.handleAck)
+        this.sendClientRequest(messages[0])
       }
+    }
+  }
+
+  sendClientRequest (message) {
+    const { socket } = this.state
+    if (socket) {
+      socket.emit('clientRequest', message, this.handleAck)
     }
   }
 
@@ -45,14 +52,21 @@ export default class ApiClient {
     return (Math.floor(Math.random() * 1000) + 1000) + '_' + Date.now()
   }
 
-  send (topic, payload) {
-    const messages = this.buffer.get()
-    messages.push({
+  send (topic, payload, buffer = true) {
+    const message = {
       clientRequestId: this.createId(),
       topic,
       payload
-    })
-    this.buffer.set(messages)
+    }
+    if (buffer) {
+      // Buffer message for sending (a few moments later).
+      const messages = this.buffer.get()
+      messages.push(message)
+      this.buffer.set(messages)
+    } else {
+      // Send unbuffered message.
+      this.sendClientRequest(message)
+    }
     this.stats.sent++
   }
 

@@ -10,7 +10,9 @@ const initialState = U({
   identity: null,
   route: null,
   isAppLoading: false,
-  terminalText: `Hello, world!\nStart typing:\n`
+  terminalText: `Hi. I’m Commodore.\nI’ll be your terminal today.\nStart typing (try 'help'):\n`,
+  terminalBuffer: '',
+  terminalIsTyping: false
 }, { })
 
 function replaceSettings (state, payload) {
