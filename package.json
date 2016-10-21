@@ -15,8 +15,11 @@
   "author": "Anri Digholm",
   "license": "ISC",
   "dependencies": {
+    "bluebird": "^3.4.6",
     "express": "^4.14.0",
+    "googleapis": "^14.1.0",
     "lodash.debounce": "^4.0.8",
+    "mongodb": "^2.2.11",
     "react": "^15.3.1",
     "react-dom": "^15.3.1",
     "react-redux": "^4.4.5",

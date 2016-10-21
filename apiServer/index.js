@@ -10,6 +10,18 @@ const io = require('socket.io')(server)
 const PORT = 4002
 const VERSION = process.env.npm_package_version
 
+// Setup collections and indexes.
+const Mongo = require('./mongodb')
+Mongo.query(function * (db) {
+  const index1 = yield db.ensureIndex('users', { email: 1 }, { unique: true, background: true })
+  const index2 = yield db.ensureIndex('users', { googleId: 1 }, { unique: true, background: true })
+  const index3 = yield db.ensureIndex('apiTokens', { userId: 1 }, { unique: true, background: true })
+  const index4 = yield db.ensureIndex('accessTokens', { token: 1 }, { unique: true, background: true })
+  console.log('Ensure index:', [index1, index2, index3, index4])
+})
+
+require('./google')(app)
+
 const serverData = {
   counter: 0
 }
