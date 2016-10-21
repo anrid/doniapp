@@ -25,6 +25,8 @@ class LoginPage extends Component {
     return (
       <RouteTransition pathname='login' {...presets.slideRight}>
         <div className='LoginPage SkyGradient11'>
+          <div className='LoginPage__Cloud LoginPage__CloudOne' />
+          <div className='LoginPage__Cloud LoginPage__CloudTwo' />
           <div className='LoginPage__Header'>Stay a while, and listen.</div>
           <div className='LoginPage__Form'>
             <div className='LoginPage__FormField'>
