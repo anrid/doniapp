@@ -14,7 +14,6 @@ function fetchJson (_url, body = { }, method = 'POST') {
     body: JSON.stringify(body)
   }
   const req = new Request(url, opts)
-  console.log('req.bodyUsed', req.bodyUsed, 'body:', body)
   return fetch(req).then(resp => resp.json())
 }
 

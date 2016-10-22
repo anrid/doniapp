@@ -4,6 +4,7 @@ const P = require('bluebird')
 const Assert = require('assert')
 const Https = require('https')
 const Google = require('googleapis')
+const Crypto = require('crypto')
 
 const OAuth2 = Google.auth.OAuth2
 const Mongo = require('./mongodb')
@@ -16,7 +17,7 @@ const oauth2Client = new OAuth2(
 
 function request (url) {
   return new P((resolve, reject) => {
-    console.log('Request:', url)
+    console.log('Request:', url.substr(0, 128))
     Https.get(url, r => {
       console.log(`Got response: ${r.statusCode}`)
       let buffer = ''
@@ -31,10 +32,40 @@ function request (url) {
   })
 }
 
+function createToken (str, salt) {
+  const hash = Crypto.createHash('sha512')
+  hash.update(str + salt)
+  return hash.digest('hex')
+}
+
+function createAccessTokenForUser (userId) {
+  const token = createToken(userId, process.env.DONIAPP_GOOGLE_CLIENT_SECRET)
+  return Mongo.query(function * (db) {
+    yield db.collection('accessTokens').insertOne({
+      token,
+      userId,
+      created: new Date(),
+      expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30) // 30 days.
+    })
+    return token
+  })
+}
+
+function getRecentAccessToken (userId) {
+  return Mongo.query(function * (db) {
+    const existing = yield db.collection('accessTokens')
+    .findOne({ userId }, { limit: 1, sort: { _id: -1 } })
+    if (!existing) {
+      return yield createAccessTokenForUser(userId)
+    }
+    return existing.token
+  })
+}
+
 module.exports = function (app) {
   // Setup Google auth.
-  function createUser (userinfo, googleApiTokens) {
-    const user = {
+  function createOrUpdateUser (userinfo, googleApiTokens) {
+    const data = {
       email: userinfo.email,
       locale: userinfo.locale,
       photo: userinfo.picture,
@@ -46,28 +77,44 @@ module.exports = function (app) {
       updated: new Date()
     }
 
-    function * _create (db, opts) {
-      Assert(user)
-      Assert(user.email)
-      const tokens = { googleApiTokens }
-      const existing = yield db.collection('users').findOne({ googleId: user.googleId })
+    return Mongo.query(function * (db) {
+      Assert(data)
+      Assert(data.email)
+
+      const existing = yield db.collection('users').findOne({ googleId: data.googleId })
+      let userId = null
+      let email = null
       if (!existing) {
-        const res1 = yield db.collection('users').insertOne(user)
-        tokens.userId = res1.insertedId
-        console.log(`Created new user ${user.email} (${tokens.userId.toString()})`)
+        const res1 = yield db.collection('users').insertOne(data)
+        userId = res1.insertedId
+        email = data.email
+        console.log(`Created new user ${data.email} (${userId.toString()})`)
       } else {
-        tokens.userId = existing._id
-        console.log(`Found existing user ${existing.email} (${tokens.userId.toString()})`)
+        userId = existing._id
+        email = existing.email
+        console.log(`Found existing user ${existing.email} (${userId.toString()})`)
       }
+
+      // Save Google access token if we have one.
       if (googleApiTokens) {
+        const tokens = {
+          userId,
+          googleApiTokens
+        }
         yield db.collection('apiTokens').findOneAndUpdate(
           { userId: tokens.userId },
           { $set: tokens, $setOnInsert: { updated: new Date() } },
           { upsert: true }
         )
       }
-    }
-    return Mongo.query(_create, { user })
+
+      const accessToken = yield getRecentAccessToken(userId)
+      return {
+        userId,
+        email,
+        accessToken
+      }
+    })
   }
 
   app.get('/google-auth', (req, res) => {
@@ -92,11 +139,11 @@ module.exports = function (app) {
       return request(url)
       .then(json => JSON.parse(json))
       .then(info => {
-        console.log('Token info:', info)
+        console.log(`Got token info for ${info.name} (${info.email}).`)
         Assert(info && info.aud && info.aud === process.env.DONIAPP_GOOGLE_CLIENT_ID)
         // Create or update user.
-        createUser(info)
-        .then(() => res.json({ done: 'deal', info }))
+        createOrUpdateUser(info)
+        .then(result => res.json(result))
       })
     })
     .catch(error => res.status(400).json({ error }))
@@ -128,7 +175,7 @@ module.exports = function (app) {
         )
       })
     })
-    .then(({ userinfo, tokens }) => createUser(userinfo, tokens))
+    .then(({ userinfo, tokens }) => createOrUpdateUser(userinfo, tokens))
     .then(() => res.status(200).send('Done.'))
     .catch(err => {
       console.error('Catch:', err)

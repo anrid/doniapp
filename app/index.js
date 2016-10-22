@@ -95,7 +95,7 @@ class AppLoader extends Component {
     const { isLoading } = this.state
     const Root = this.props.root
     if (isLoading) {
-      return <div>Loading app ..</div>
+      return <div className='AppLoadingScreen'>Loading app ..</div>
     }
     return <Root />
   }

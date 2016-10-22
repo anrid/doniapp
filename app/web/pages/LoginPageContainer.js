@@ -13,9 +13,12 @@ function mapStateToProps (state, ownProps) {
 }
 
 function mapDispatchToProps (dispatch) {
-  return bindActionCreators({
-    loginAction: Settings.actions.login
-  }, dispatch)
+  return {
+    actions: bindActionCreators({
+      login: Settings.actions.login,
+      googleLogin: Settings.actions.googleLogin
+    }, dispatch)
+  }
 }
 
 const ConnectedLoginPage = connect(

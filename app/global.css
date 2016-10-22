@@ -72,3 +72,17 @@ button {
   -webkit-user-select: none;
   -ms-user-select: none;
 }
+
+.AppLoadingScreen {
+  @extend fat-header;
+  font-family: 'Open Sans', sans-serif;
+  width: 100vw;
+  height: 100vh;
+  font-size: 3rem;
+  font-weight: 800;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+
+}

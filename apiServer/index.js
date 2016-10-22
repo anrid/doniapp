@@ -17,7 +17,8 @@ Mongo.query(function * (db) {
   const index2 = yield db.ensureIndex('users', { googleId: 1 }, { unique: true, background: true })
   const index3 = yield db.ensureIndex('apiTokens', { userId: 1 }, { unique: true, background: true })
   const index4 = yield db.ensureIndex('accessTokens', { token: 1 }, { unique: true, background: true })
-  console.log('Ensure index:', [index1, index2, index3, index4])
+  const index5 = yield db.ensureIndex('accessTokens', { userId: 1 }, { background: true })
+  console.log('Ensure index:', [index1, index2, index3, index4, index5])
 })
 
 const serverData = {

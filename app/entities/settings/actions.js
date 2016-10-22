@@ -17,6 +17,12 @@ export const setSettings = (payload) => ({
 
 export const login = (email, password) => Api.actions.login(email, password)
 
+export const googleLogin = (idToken) =>
+  (dispatch) => {
+    Api.actions.checkGoogleIdToken(idToken)
+    .then(identity => dispatch(loginSuccessful({ identity })))
+  }
+
 export const logout = () =>
   (dispatch, getState) => {
     const identity = getState().settings.identity

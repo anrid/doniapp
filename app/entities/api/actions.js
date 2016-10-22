@@ -2,6 +2,7 @@
 
 import Settings from '../settings'
 import * as types from './types'
+import { fetchJson } from '../../lib/util'
 
 export const login = (email, password) => (
   { type: types.LOGIN, topic: 'auth', payload: { email, password }, buffer: false }
@@ -13,6 +14,10 @@ export const logout = (accessToken) => (
 
 export const starter = () => (
   { type: types.STARTER, topic: 'app:starter', payload: {}, buffer: false }
+)
+
+export const checkGoogleIdToken = (idToken) => (
+  fetchJson('/google-check-id-token', { idToken })
 )
 
 export const updateServerCounter = () => ({
