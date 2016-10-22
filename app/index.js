@@ -19,7 +19,7 @@ import Storage from './lib/storage'
 import Api from './entities/api'
 import ApiClient from './lib/apiClient'
 
-const client = new ApiClient('ws://localhost:4002')
+const client = new ApiClient(window.Config.WS_API_URL)
 client.connect()
 client.send('echo', { value: 123 })
 

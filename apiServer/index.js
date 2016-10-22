@@ -20,8 +20,6 @@ Mongo.query(function * (db) {
   console.log('Ensure index:', [index1, index2, index3, index4])
 })
 
-require('./google')(app)
-
 const serverData = {
   counter: 0
 }
@@ -31,6 +29,19 @@ server.listen(4002, () => console.log(`
   Port:    ${PORT}
   Version: ${VERSION}
 `))
+
+// CORS setup.
+const cors = require('cors')
+app.use(cors())
+app.options('*', cors())
+
+// Body parser setup.
+const bodyParser = require('body-parser')
+app.use(bodyParser.json()) // for parsing application/json
+app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+
+// Setup routes AFTER all the low-level middleware !
+require('./google')(app)
 
 app.get('/', function (req, res) {
   res.sendfile(Path.join(__dirname, '/index.html'))

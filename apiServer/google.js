@@ -2,7 +2,9 @@
 
 const P = require('bluebird')
 const Assert = require('assert')
+const Https = require('https')
 const Google = require('googleapis')
+
 const OAuth2 = Google.auth.OAuth2
 const Mongo = require('./mongodb')
 
@@ -12,19 +14,34 @@ const oauth2Client = new OAuth2(
   process.env.DONIAPP_GOOGLE_REDIRECT_URL
 )
 
+function request (url) {
+  return new P((resolve, reject) => {
+    console.log('Request:', url)
+    Https.get(url, r => {
+      console.log(`Got response: ${r.statusCode}`)
+      let buffer = ''
+      r.setEncoding('utf8')
+      r.on('data', chunk => buffer += chunk)
+      r.on('end', () => resolve(buffer))
+    })
+    .on('error', e => {
+      console.log(`Got error: ${e.message}`)
+      reject(e)
+    })
+  })
+}
+
 module.exports = function (app) {
   // Setup Google auth.
   function createUser (userinfo, googleApiTokens) {
     const user = {
       email: userinfo.email,
-      link: userinfo.link,
       locale: userinfo.locale,
-      gender: userinfo.gender,
       photo: userinfo.picture,
       givenName: userinfo.given_name,
       familyName: userinfo.family_name,
       name: userinfo.name,
-      googleId: userinfo.id,
+      googleId: userinfo.sub,
       created: new Date(),
       updated: new Date()
     }
@@ -42,16 +59,18 @@ module.exports = function (app) {
         tokens.userId = existing._id
         console.log(`Found existing user ${existing.email} (${tokens.userId.toString()})`)
       }
-      yield db.collection('apiTokens').findOneAndUpdate(
-        { userId: tokens.userId },
-        { $set: tokens, $setOnInsert: { updated: new Date() } },
-        { upsert: true }
-      )
+      if (googleApiTokens) {
+        yield db.collection('apiTokens').findOneAndUpdate(
+          { userId: tokens.userId },
+          { $set: tokens, $setOnInsert: { updated: new Date() } },
+          { upsert: true }
+        )
+      }
     }
     return Mongo.query(_create, { user })
   }
 
-  app.get('/google-auth', function (req, res) {
+  app.get('/google-auth', (req, res) => {
     Assert(process.env.DONIAPP_GOOGLE_CLIENT_ID)
     Assert(process.env.DONIAPP_GOOGLE_CLIENT_SECRET)
     Assert(process.env.DONIAPP_GOOGLE_REDIRECT_URL)
@@ -66,7 +85,24 @@ module.exports = function (app) {
     res.redirect(302, url)
   })
 
-  app.get('/google-auth-callback', function (req, res) {
+  app.post('/google-check-id-token', (req, res) => {
+    return P.try(() => {
+      Assert(req.body.idToken, 'missing idToken key')
+      const url = `https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=${req.body.idToken}`
+      return request(url)
+      .then(json => JSON.parse(json))
+      .then(info => {
+        console.log('Token info:', info)
+        Assert(info && info.aud && info.aud === process.env.DONIAPP_GOOGLE_CLIENT_ID)
+        // Create or update user.
+        createUser(info)
+        .then(() => res.json({ done: 'deal', info }))
+      })
+    })
+    .catch(error => res.status(400).json({ error }))
+  })
+
+  app.get('/google-auth-callback', (req, res) => {
     return new P((resolve, reject) => {
       const code = req.query.code
       oauth2Client.getToken(code, (err, tokens) => {

@@ -1,7 +1,7 @@
 {
   "name": "Doni",
   "version": "1.0.0",
-  "description": "A mobile first app.",
+  "description": "An app of sorts.",
   "main": "index.js",
   "repository": "git@github.com:anrid/doniapp.git",
   "scripts": {
@@ -16,10 +16,13 @@
   "license": "ISC",
   "dependencies": {
     "bluebird": "^3.4.6",
+    "body-parser": "^1.15.2",
+    "cors": "^2.8.1",
     "express": "^4.14.0",
     "googleapis": "^14.1.0",
     "lodash.debounce": "^4.0.8",
     "mongodb": "^2.2.11",
+    "multer": "^1.2.0",
     "react": "^15.3.1",
     "react-dom": "^15.3.1",
     "react-redux": "^4.4.5",
