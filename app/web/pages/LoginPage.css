@@ -18,8 +18,20 @@
   */
 
   &__Header {
+    text-align: center;
+  }
+
+  &__Logo {
     @extend fat-header;
+    font-size: 8rem;
+    line-height: 1;
     margin-bottom: 1rem;
+  }
+
+  &__Subheading {
+    @extend fat-header;
+    font-size: 2rem;
+    margin-bottom: 2rem;
   }
 
   &__FormField {

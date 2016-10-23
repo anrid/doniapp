@@ -3,6 +3,7 @@
 
 import React, { Component, PropTypes } from 'react'
 import { RouteTransition, presets } from 'react-router-transition'
+import { Motion, spring } from 'react-motion'
 
 import './LoginPage.css'
 
@@ -129,7 +130,24 @@ class LoginPage extends Component {
         <div className='LoginPage SkyGradient11'>
           <div className='LoginPage__Cloud LoginPage__CloudOne' />
           <div className='LoginPage__Cloud LoginPage__CloudTwo' />
-          <div className='LoginPage__Header'>Stay a while, and listen.</div>
+          <Motion
+            defaultStyle={{scale: 0.90, opacity: 0.6}}
+            style={{
+              spacing: spring(5, {stiffness: 1, damping: 0.5}),
+              opacity: spring(1, {stiffness: 0.25, damping: 0.25})
+            }}
+          >
+            {value => (
+              <div className='LoginPage__Header'>
+                <div className='LoginPage__Logo' style={{ opacity: value.opacity }}>
+                  ether
+                </div>
+                <div className='LoginPage__Subheading' style={{ opacity: value.opacity }}>
+                  Stay a while, and listen.
+                </div>
+              </div>
+            )}
+          </Motion>
           {this.renderGoogleButton()}
         </div>
       </RouteTransition>
