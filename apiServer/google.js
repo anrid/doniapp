@@ -139,14 +139,17 @@ module.exports = function (app) {
       return request(url)
       .then(json => JSON.parse(json))
       .then(info => {
+        Assert(info && info.aud, 'Missing aud key')
+        Assert(info.aud === process.env.DONIAPP_GOOGLE_CLIENT_ID, 'Google client id mismatch')
         console.log(`Got token info for ${info.name} (${info.email}).`)
-        Assert(info && info.aud && info.aud === process.env.DONIAPP_GOOGLE_CLIENT_ID)
         // Create or update user.
         createOrUpdateUser(info)
         .then(result => res.json(result))
       })
     })
-    .catch(error => res.status(400).json({ error }))
+    .catch(error => {
+      res.status(400).send(error.message)
+    })
   })
 
   app.get('/google-auth-callback', (req, res) => {

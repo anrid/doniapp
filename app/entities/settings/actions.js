@@ -21,6 +21,7 @@ export const googleLogin = (idToken) =>
   (dispatch) => {
     Api.actions.checkGoogleIdToken(idToken)
     .then(identity => dispatch(loginSuccessful({ identity })))
+    .catch(error => console.error('Google login failed:', error, error.json))
   }
 
 export const logout = () =>

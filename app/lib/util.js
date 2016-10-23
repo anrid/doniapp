@@ -14,7 +14,17 @@ function fetchJson (_url, body = { }, method = 'POST') {
     body: JSON.stringify(body)
   }
   const req = new Request(url, opts)
-  return fetch(req).then(resp => resp.json())
+  return fetch(req)
+  .then(resp => {
+    if (resp.ok) {
+      return resp.json()
+    }
+    return resp.json().then(json => {
+      const e = new Error(resp.statusText)
+      e.json = json
+      throw e
+    })
+  })
 }
 
 module.exports = {

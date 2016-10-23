@@ -4,6 +4,7 @@
 import React, { Component, PropTypes } from 'react'
 import { RouteTransition, presets } from 'react-router-transition'
 import { Motion, spring } from 'react-motion'
+import Moment from 'moment'
 
 import './LoginPage.css'
 
@@ -45,7 +46,7 @@ class LoginPage extends Component {
     } else {
       state.loginDirectly = true
     }
-    console.log('onGoogleSignIn:', state)
+    // console.log('onGoogleSignIn:', state)
     this.setState(state)
   }
 
@@ -125,11 +126,16 @@ class LoginPage extends Component {
   }
 
   render () {
+    const now = Moment()
+    const timeMorning = Moment().startOf('day').add(9, 'hours')
+    const timeEvening = Moment().startOf('day').add(18, 'hours')
+    const sunStyle = now.isBetween(timeMorning, timeEvening) ? 'Day' : 'Morning'
     return (
       <RouteTransition pathname='login' {...presets.slideRight}>
         <div className='LoginPage SkyGradient11'>
           <div className='LoginPage__Cloud LoginPage__CloudOne' />
           <div className='LoginPage__Cloud LoginPage__CloudTwo' />
+          <div className={`LoginPage__Sun LoginPage__Sun--${sunStyle}`} />
           <Motion
             defaultStyle={{scale: 0.90, opacity: 0.6}}
             style={{
