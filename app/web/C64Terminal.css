@@ -33,10 +33,10 @@
 
 @font-face {
   font-family: 'Giana';
-  src: url('/fonts/Giana.ttf') format('truetype');
+  src: url('./fonts/Giana.ttf') format('truetype');
 }
 
 @font-face {
   font-family: 'C64';
-  src: url('/fonts/PetMe128.ttf') format('truetype');
+  src: url('./fonts/PetMe128.ttf') format('truetype');
 }

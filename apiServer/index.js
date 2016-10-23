@@ -2,10 +2,14 @@
 
 const Assert = require('assert')
 const Path = require('path')
+const Fs = require('fs')
 
 const app = require('express')()
 const server = require('http').Server(app)
 const io = require('socket.io')(server)
+
+Assert(process.env.DONIAPP_HOST, 'Missing env `DONIAPP_HOST`')
+Assert(process.env.DONIAPP_CDN, 'Missing env `DONIAPP_CDN`')
 
 const PORT = 4002
 const VERSION = process.env.npm_package_version
@@ -44,8 +48,15 @@ app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-
 // Setup routes AFTER all the low-level middleware !
 require('./google')(app)
 
+const indexHtml = Fs.readFileSync(Path.join(__dirname, '/index.html'), 'utf8')
 app.get('/', function (req, res) {
-  res.sendfile(Path.join(__dirname, '/index.html'))
+  const manifest = require('../build/manifest.json')
+  let html = indexHtml
+  .replace(/@HOST/g, process.env.DONIAPP_HOST)
+  .replace(/@SOCKET/g, process.env.DONIAPP_HOST.replace(/https?/, 'ws'))
+  .replace(/@BUNDLE/g, `${process.env.DONIAPP_CDN}/${manifest['app.js']}`)
+  .replace(/@GOOGLE_CLIENT_ID/, process.env.DONIAPP_GOOGLE_CLIENT_ID)
+  res.send(html)
 })
 
 function createServerToken () {

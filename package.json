@@ -10,17 +10,20 @@
     "test-once": "tape-watch ./app/**/__tests__/*.js -r babel-register --once",
     "test": "npm run test-once | faucet",
     "api": "nodemon --ext js,html --watch apiServer/ apiServer/index.js",
-    "start": "concurrently --kill-others --prefix '[{name}]' --names 'BUNDLE,API' -c 'bgBlue.bold,bgMagenta.bold' 'npm run app' 'npm run api'"
+    "start": "concurrently --kill-others --prefix '[{name}]' --names 'BUNDLE,API' -c 'bgBlue.bold,bgMagenta.bold' 'npm run app' 'npm run api'",
+    "build": "NODE_ENV=production webpack --progress --cache"
   },
   "author": "Anri Digholm",
   "license": "ISC",
   "dependencies": {
+    "aws-sdk": "^2.6.11",
     "bluebird": "^3.4.6",
     "body-parser": "^1.15.2",
     "cors": "^2.8.1",
     "express": "^4.14.0",
     "googleapis": "^14.1.0",
     "lodash.debounce": "^4.0.8",
+    "mimer": "^0.2.1",
     "moment": "^2.15.1",
     "mongodb": "^2.2.11",
     "multer": "^1.2.0",
@@ -35,7 +38,8 @@
     "redux-logger": "^2.6.1",
     "redux-thunk": "^2.1.0",
     "socket.io": "^1.4.8",
-    "updeep": "^0.16.1"
+    "updeep": "^0.16.1",
+    "webpack-manifest-plugin": "^1.1.0"
   },
   "devDependencies": {
     "autoprefixer": "^6.4.1",
@@ -49,6 +53,7 @@
     "concurrently": "^3.0.0",
     "css-loader": "^0.25.0",
     "faucet": "0.0.1",
+    "file-loader": "^0.9.0",
     "glob": "^7.1.0",
     "nodemon": "^1.10.2",
     "postcss-loader": "^0.13.0",
@@ -58,6 +63,7 @@
     "style-loader": "^0.13.1",
     "tape": "^4.6.0",
     "tape-watch": "^2.2.3",
+    "url-loader": "^0.5.7",
     "webpack": "^1.13.2",
     "webpack-dev-server": "^1.15.2"
   }
