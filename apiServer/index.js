@@ -9,9 +9,9 @@ const server = require('http').Server(app)
 const io = require('socket.io')(server)
 
 Assert(process.env.DONIAPP_HOST, 'Missing env `DONIAPP_HOST`')
+Assert(process.env.DONIAPP_PORT, 'Missing env `DONIAPP_PORT`')
 Assert(process.env.DONIAPP_CDN, 'Missing env `DONIAPP_CDN`')
 
-const PORT = 4002
 const VERSION = process.env.npm_package_version
 
 // Setup collections and indexes.
@@ -29,9 +29,9 @@ const serverData = {
   counter: 0
 }
 
-server.listen(4002, () => console.log(`
+server.listen(process.env.DONIAPP_PORT, () => console.log(`
   API server running.
-  Port:    ${PORT}
+  Port:    ${process.env.DONIAPP_PORT}
   Version: ${VERSION}
 `))
 

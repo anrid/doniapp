@@ -11,7 +11,8 @@
     "test": "npm run test-once | faucet",
     "api": "nodemon --ext js,html --watch apiServer/ apiServer/index.js",
     "start": "concurrently --kill-others --prefix '[{name}]' --names 'BUNDLE,API' -c 'bgBlue.bold,bgMagenta.bold' 'npm run app' 'npm run api'",
-    "build": "NODE_ENV=production webpack --progress --cache"
+    "build": "NODE_ENV=production webpack --progress --cache",
+    "release": "node cli/release.js"
   },
   "author": "Anri Digholm",
   "license": "ISC",
