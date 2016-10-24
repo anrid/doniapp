@@ -53,7 +53,10 @@ app.get('/', function (req, res) {
   const manifest = require('../build/manifest.json')
   let html = indexHtml
   .replace(/@HOST/g, process.env.DONIAPP_HOST)
-  .replace(/@SOCKET/g, process.env.DONIAPP_HOST.replace(/https?/, 'ws'))
+  .replace(
+    /@SOCKET/g,
+    process.env.DONIAPP_HOST.replace('https', 'wss').replace('http', 'ws')
+  )
   .replace(/@BUNDLE/g, `${process.env.DONIAPP_CDN}/${manifest['app.js']}`)
   .replace(/@GOOGLE_CLIENT_ID/, process.env.DONIAPP_GOOGLE_CLIENT_ID)
   res.send(html)
