@@ -6,9 +6,10 @@
   "repository": "git@github.com:anrid/doniapp.git",
   "scripts": {
     "app": "webpack-dev-server --hot --inline --watch --port 8889 --quiet --content-base build/",
+    "test-api-once": "tape ./apiServer/**/*_test.js",
     "test-watch": "tape-watch ./app/**/__tests__/*.js -r babel-register",
     "test-once": "tape-watch ./app/**/__tests__/*.js -r babel-register --once",
-    "test": "npm run test-once | faucet",
+    "test": "yarn run test-once | faucet",
     "api": "nodemon --ext js,html --watch apiServer/ apiServer/index.js",
     "start": "concurrently --kill-others --prefix '[{name}]' --names 'BUNDLE,API' -c 'bgBlue.bold,bgMagenta.bold' 'npm run app' 'npm run api'",
     "build": "NODE_ENV=production webpack --progress --cache",

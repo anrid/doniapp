@@ -9,7 +9,7 @@ const initialState = U({
   serverError: null,
   identity: null,
   route: null,
-  isAppLoading: false,
+  isAppLoading: true,
   terminalText: `Hi. I’m Commodore.\nI’ll be your terminal today.\nStart typing (try 'help'):\n`,
   terminalBuffer: '',
   terminalIsTyping: false

@@ -15,8 +15,6 @@ export const setSettings = (payload) => ({
   payload
 })
 
-export const login = (email, password) => Api.actions.login(email, password)
-
 export const googleLogin = (idToken) =>
   (dispatch) => {
     Api.actions.checkGoogleIdToken(idToken)
@@ -39,19 +37,17 @@ export const loginSuccessful = (payload) =>
   (dispatch, getState) => {
     Storage.set({ savedIdentity: payload })
     dispatch(setIdentity(payload))
-    dispatch(loadApp())
+    dispatch(Api.actions.starter())
     dispatch(routeTo('/'))
   }
 
-export const loadSavedIdentity = (identity) => ({
-  type: types.SET_IDENTITY,
-  payload: identity
-})
-
-export const loadApp = () =>
+export const authTokenSuccessful = (payload) =>
   (dispatch, getState) => {
-    dispatch(setSetting('isAppLoading', true))
+    Storage.set({ savedIdentity: payload })
+    dispatch(setIdentity(payload))
     dispatch(Api.actions.starter())
+    console.log('Route or don’t route... that is the question !')
+    // dispatch(routeTo('/'))
   }
 
 export const routeTo = (uri) => push(uri)
@@ -65,6 +61,7 @@ export const setIdentity = (payload) =>
     })
   }
 
+export const setIsAppLoading = (value) => setSetting('isAppLoading', value)
 export const setIsRequestInProgress = (value) => setSetting('isRequestInProgress', value)
 export const setConnectedToServer = (value) => setSetting('isConnectedToServer', value)
 export const setServerError = (error) => setSetting('serverError', error)

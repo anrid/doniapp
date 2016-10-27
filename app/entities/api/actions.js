@@ -4,6 +4,10 @@ import Settings from '../settings'
 import * as types from './types'
 import { fetchJson } from '../../lib/util'
 
+export const authToken = (token) => (
+  { type: types.AUTH_TOKEN, topic: 'auth:token', payload: { token }, buffer: false }
+)
+
 export const login = (email, password) => (
   { type: types.LOGIN, topic: 'auth', payload: { email, password }, buffer: false }
 )
@@ -30,6 +34,8 @@ export const serverMessage = (data) =>
   (dispatch) => {
     console.log('Server message action, data=', data)
     switch (data.topic) {
+      case 'auth:token:successful':
+        return dispatch(Settings.actions.authTokenSuccessful(data.payload))
       case 'auth:successful':
         return dispatch(Settings.actions.loginSuccessful(data.payload))
       case 'app:starter':

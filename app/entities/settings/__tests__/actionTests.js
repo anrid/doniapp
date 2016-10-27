@@ -30,7 +30,7 @@ Test('Login test', function (t) {
     }
   })
 
-  store.dispatch(Actions.login('ace@base.se', '123456'))
+  store.dispatch(Api.actions.login('ace@base.se', '123456'))
 
   const calls = store.getActions()
   t.ok(calls[0].type === Api.types.LOGIN)
@@ -57,9 +57,8 @@ Test('Login successful test', function (t) {
   // console.log('calls=', calls)
   t.ok(calls[0].type === Types.SET_IDENTITY)
   t.deepEqual(calls[0].payload, identity)
-  t.ok(calls[1].type === Types.SET_SETTING)
-  t.ok(calls[2].type === Api.types.STARTER)
-  t.ok(calls[3].payload.args[0] === '/')
+  t.ok(calls[1].type === Api.types.STARTER)
+  t.ok(calls[2].payload.args[0] === '/')
 })
 
 Test('Logout test', function (t) {

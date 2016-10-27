@@ -9,7 +9,7 @@ import {
   hashHistory,
   Link
 } from 'react-router'
-import { Provider } from 'react-redux'
+import { Provider, connect } from 'react-redux'
 
 import './global.css'
 
@@ -69,65 +69,60 @@ function requireCredentials (nextState, replace, next) {
   }
 }
 
-class AppLoader extends Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-      isLoading: true
-    }
+// Init app.
+Storage.get().then(data => {
+  const identity = data && data.savedIdentity && data.savedIdentity.identity
+  // Restore saved identity.
+  if (identity) {
+    console.log('Restoring saved identity:', identity)
+    store.dispatch(Api.actions.authToken(identity.accessToken))
   }
+})
 
-  componentDidMount () {
-    Storage.get()
-    .then(data => {
-      if (data) {
-        // Restore saved identity.
-        if (data.savedIdentity) {
-          console.log('Restoring saved identity:', data.savedIdentity.identity)
-          store.dispatch(Settings.actions.loadSavedIdentity(data.savedIdentity.identity))
-        }
-      }
-      setTimeout(() => this.setState({ isLoading: false }), 250)
-    })
-  }
-
-  render () {
-    const { isLoading } = this.state
-    const Root = this.props.root
-    if (isLoading) {
-      return <div className='AppLoadingScreen'>Loading app ..</div>
-    }
-    return <Root />
+function mapStateToProps (state, ownProps) {
+  return {
+    isAppLoading: Settings.selectors.isAppLoading(state)
   }
 }
 
-AppLoader.propTypes = {
-  root: PropTypes.any.isRequired
-}
+const AppLoader = connect(mapStateToProps)(({ isAppLoading, children }) => {
+  if (isAppLoading) {
+    return (
+      <div className='AppLoadingScreen'>Loading app ..</div>
+    )
+  }
+  return children
+})
+
+const AppRouter = () => (
+  <Router history={hashHistory}>
+    <Route path='/' component={App} onEnter={requireCredentials}>
+      <IndexRoute component={HomePage} />
+      <Route path='about' component={AboutPage} />
+      <Route path='retro' component={RetroPageContainer} />
+      <Route path='inbox' component={Inbox}>
+        <IndexRoute component={InboxStatsContainer}/>
+        <Route path='message/:id' component={InboxMessageContainer} />
+      </Route>
+      <Route path='signout' component={SignOutPageContainer} />
+    </Route>
+    <Route path='login' component={LoginPageContainer} />
+    <Route path='error' component={ErrorPage} />
+    <Route path='demos' component={DemosPageContainer}>
+      <Route path='input-widget' component={InputWidgetDemo} />
+    </Route>
+  </Router>
+)
 
 const AppRoot = () => (
   <Provider store={store}>
-    <Router history={hashHistory}>
-      <Route path='/' component={App} onEnter={requireCredentials}>
-        <IndexRoute component={HomePage} />
-        <Route path='about' component={AboutPage} />
-        <Route path='retro' component={RetroPageContainer} />
-        <Route path='inbox' component={Inbox}>
-          <IndexRoute component={InboxStatsContainer}/>
-          <Route path='message/:id' component={InboxMessageContainer} />
-        </Route>
-        <Route path='signout' component={SignOutPageContainer} />
-      </Route>
-      <Route path='login' component={LoginPageContainer} />
-      <Route path='error' component={ErrorPage} />
-      <Route path='demos' component={DemosPageContainer}>
-        <Route path='input-widget' component={InputWidgetDemo} />
-      </Route>
-    </Router>
+    <AppLoader>
+      <AppRouter />
+    </AppLoader>
   </Provider>
 )
 
 ReactDOM.render(
-  <AppLoader root={AppRoot} />,
+  <AppRoot />,
   document.getElementById('reactapp')
 )

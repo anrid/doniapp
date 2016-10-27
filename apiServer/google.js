@@ -4,10 +4,10 @@ const P = require('bluebird')
 const Assert = require('assert')
 const Https = require('https')
 const Google = require('googleapis')
-const Crypto = require('crypto')
 
 const OAuth2 = Google.auth.OAuth2
-const Mongo = require('./mongodb')
+
+const User = require('./db/user')
 
 const oauth2Client = new OAuth2(
   process.env.DONIAPP_GOOGLE_CLIENT_ID,
@@ -32,90 +32,8 @@ function request (url) {
   })
 }
 
-function createToken (str, salt) {
-  const hash = Crypto.createHash('sha512')
-  hash.update(str + salt)
-  return hash.digest('hex')
-}
-
-function createAccessTokenForUser (userId) {
-  const token = createToken(userId, process.env.DONIAPP_GOOGLE_CLIENT_SECRET)
-  return Mongo.query(function * (db) {
-    yield db.collection('accessTokens').insertOne({
-      token,
-      userId,
-      created: new Date(),
-      expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30) // 30 days.
-    })
-    return token
-  })
-}
-
-function getRecentAccessToken (userId) {
-  return Mongo.query(function * (db) {
-    const existing = yield db.collection('accessTokens')
-    .findOne({ userId }, { limit: 1, sort: { _id: -1 } })
-    if (!existing) {
-      return yield createAccessTokenForUser(userId)
-    }
-    return existing.token
-  })
-}
-
 module.exports = function (app) {
   // Setup Google auth.
-  function createOrUpdateUser (userinfo, googleApiTokens) {
-    const data = {
-      email: userinfo.email,
-      locale: userinfo.locale,
-      photo: userinfo.picture,
-      givenName: userinfo.given_name,
-      familyName: userinfo.family_name,
-      name: userinfo.name,
-      googleId: userinfo.sub,
-      created: new Date(),
-      updated: new Date()
-    }
-
-    return Mongo.query(function * (db) {
-      Assert(data)
-      Assert(data.email)
-
-      const existing = yield db.collection('users').findOne({ googleId: data.googleId })
-      let userId = null
-      let email = null
-      if (!existing) {
-        const res1 = yield db.collection('users').insertOne(data)
-        userId = res1.insertedId
-        email = data.email
-        console.log(`Created new user ${data.email} (${userId.toString()})`)
-      } else {
-        userId = existing._id
-        email = existing.email
-        console.log(`Found existing user ${existing.email} (${userId.toString()})`)
-      }
-
-      // Save Google access token if we have one.
-      if (googleApiTokens) {
-        const tokens = {
-          userId,
-          googleApiTokens
-        }
-        yield db.collection('apiTokens').findOneAndUpdate(
-          { userId: tokens.userId },
-          { $set: tokens, $setOnInsert: { updated: new Date() } },
-          { upsert: true }
-        )
-      }
-
-      const accessToken = yield getRecentAccessToken(userId)
-      return {
-        userId,
-        email,
-        accessToken
-      }
-    })
-  }
 
   app.get('/google-auth', (req, res) => {
     Assert(process.env.DONIAPP_GOOGLE_CLIENT_ID)
@@ -143,7 +61,7 @@ module.exports = function (app) {
         Assert(info.aud === process.env.DONIAPP_GOOGLE_CLIENT_ID, 'Google client id mismatch')
         console.log(`Got token info for ${info.name} (${info.email}).`)
         // Create or update user.
-        createOrUpdateUser(info)
+        return User.createOrUpdateUserFromGoogleInfo(info)
         .then(result => res.json(result))
       })
     })
@@ -178,7 +96,7 @@ module.exports = function (app) {
         )
       })
     })
-    .then(({ userinfo, tokens }) => createOrUpdateUser(userinfo, tokens))
+    .then(({ userinfo, tokens }) => User.createOrUpdateUserFromGoogleInfo(userinfo, tokens))
     .then(() => res.status(200).send('Done.'))
     .catch(err => {
       console.error('Catch:', err)
