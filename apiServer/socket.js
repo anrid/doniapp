@@ -11,12 +11,12 @@ const serverData = {
 
 // The big ol’ topic to handler map.
 const topicToActionMap = {
-  'echo': handleEcho,
-  'signout': handleSignout,
-  'server:update:counter': handleServerUpdateCounter,
-  'auth': handleAuth,
-  'auth:token': handleAuthToken,
-  'app:starter': handleAppStarter
+  'client:echo': handleEcho,
+  'client:signout': handleSignout,
+  'client:update:counter': handleServerUpdateCounter,
+  'client:auth': handleAuth,
+  'client:auth:token': handleAuthToken,
+  'client:app:starter': handleAppStarter
 }
 
 function handleEcho (data, socket) {
@@ -36,7 +36,7 @@ function handleConnection (socket) {
   console.log(`Socket connected ${socket.id}`)
 
   // Emit a `welcome` message on connect.
-  socket.emit('welcome', {
+  socket.emit('server:welcome', {
     serverToken: createServerToken()
   })
 
@@ -90,7 +90,7 @@ function handleAuth ({ email, password }, socket) {
   if (email !== 'ace@base.se') {
     throw new Error('Unknown user')
   }
-  serverMessage('auth:successful', {
+  serverMessage('server:auth:successful', {
     identity: {
       email: 'ace@base.se',
       accessToken: '123456'
@@ -100,27 +100,25 @@ function handleAuth ({ email, password }, socket) {
 
 // Handle topic 'auth'
 function handleAuthToken ({ token }, socket) {
-  console.log('Topic `auth:token`, token=', token)
   Token.checkAccessToken(token)
-  .then(result => {
-    User.getUser(result.userId)
+  .then(validToken => {
+    return User.getUser(validToken.userId)
     .then(user => {
-      serverMessage('auth:token:successful', {
+      serverMessage('server:auth:token:successful', {
         user,
-        identity: {
-          userId: user._id.toString(),
-          email: user.email,
-          accessToken: result.token
-        }
+        identity: User.createIdentity(user, validToken.token)
       }, socket)
     })
+  })
+  .catch(err => {
+    console.error('handleAuthToken error:', err)
+    serverMessage('server:auth:token:failed', { }, socket)
   })
 }
 
 // Handle topic 'app:starter'
 function handleAppStarter (_, socket) {
-  console.log('Topic `app:starter`')
-  serverMessage('app:starter', {
+  serverMessage('server:app:starter', {
     serverState: {
       some: 'data'
     }

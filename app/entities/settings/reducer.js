@@ -4,6 +4,7 @@ import U from 'updeep'
 import * as types from './types'
 
 const initialState = U({
+  currentUser: null,
   isConnectedToServer: false,
   isRequestPending: false,
   serverError: null,

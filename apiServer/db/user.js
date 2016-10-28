@@ -3,10 +3,24 @@
 const Assert = require('assert')
 const Mongo = require('../mongodb')
 
+function getUser (userId) {
+  return Mongo.query(function * (db) {
+    return yield db.collection('users').findOne({ _id: Mongo.getObjectId(userId) })
+  })
+}
+
 function deleteUserByEmail (email) {
   return Mongo.query(function * (db) {
     yield db.collection('users').deleteOne({ email })
   })
+}
+
+function createIdentity (user, accessToken) {
+  return {
+    userId: user._id.toString(),
+    email: user.email,
+    accessToken
+  }
 }
 
 function createOrUpdateUserFromGoogleInfo (userinfo, googleApiTokens) {
@@ -55,5 +69,7 @@ function createOrUpdateUserFromGoogleInfo (userinfo, googleApiTokens) {
 
 module.exports = {
   createOrUpdateUserFromGoogleInfo,
-  deleteUserByEmail
+  deleteUserByEmail,
+  createIdentity,
+  getUser
 }

@@ -5,19 +5,19 @@ import * as types from './types'
 import { fetchJson } from '../../lib/util'
 
 export const authToken = (token) => (
-  { type: types.AUTH_TOKEN, topic: 'auth:token', payload: { token }, buffer: false }
+  { type: types.AUTH_TOKEN, topic: 'client:auth:token', payload: { token }, buffer: false }
 )
 
 export const login = (email, password) => (
-  { type: types.LOGIN, topic: 'auth', payload: { email, password }, buffer: false }
+  { type: types.LOGIN, topic: 'client:auth', payload: { email, password }, buffer: false }
 )
 
 export const logout = (accessToken) => (
-  { type: types.LOGOUT, topic: 'signout', payload: { accessToken }, buffer: false }
+  { type: types.LOGOUT, topic: 'client:signout', payload: { accessToken }, buffer: false }
 )
 
 export const starter = () => (
-  { type: types.STARTER, topic: 'app:starter', payload: {}, buffer: false }
+  { type: types.STARTER, topic: 'client:app:starter', payload: {}, buffer: false }
 )
 
 export const checkGoogleIdToken = (idToken) => (
@@ -26,20 +26,29 @@ export const checkGoogleIdToken = (idToken) => (
 
 export const updateServerCounter = () => ({
   type: types.UPDATE_SERVER_COUNTER,
-  topic: 'server:update:counter',
+  topic: 'client:update:counter',
   payload: { value: Math.floor(Math.random() * 100) + 1 }
 })
+
+const receiveAppStarter = (starter) =>
+  (dispatch, getState) => {
+    console.log('receiveAppStarter:', getState())
+    dispatch(Settings.actions.setSettings(starter))
+    dispatch(Settings.actions.setIsAppLoading(false))
+    dispatch(Settings.actions.routeTo('/'))
+  }
 
 export const serverMessage = (data) =>
   (dispatch) => {
     console.log('Server message action, data=', data)
     switch (data.topic) {
-      case 'auth:token:successful':
-        return dispatch(Settings.actions.authTokenSuccessful(data.payload))
-      case 'auth:successful':
+      case 'server:auth:token:failed':
+        return dispatch(Settings.actions.logout())
+      case 'server:auth:token:successful':
+      case 'server:auth:successful':
         return dispatch(Settings.actions.loginSuccessful(data.payload))
-      case 'app:starter':
-        return dispatch(Settings.actions.setSettings(data.payload))
+      case 'server:app:starter':
+        return dispatch(receiveAppStarter(data.payload))
       case 'server:update:counter':
         return dispatch(Settings.actions.writeTextToTerminal(
           `Server counter is ${data.payload.value}.\n`

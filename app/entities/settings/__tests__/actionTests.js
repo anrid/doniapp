@@ -43,22 +43,31 @@ Test('Login successful test', function (t) {
 
   const store = mockStore({
     settings: {
+      currentUser: null,
       identity: null
     }
   })
+
+  const user = {
+    _id: 'user1',
+    name: 'Ace Base'
+  }
   const identity = {
+    userId: 'user1',
     email: 'ace@base.se',
     accessToken: 'ABC123'
   }
-
-  store.dispatch(Actions.loginSuccessful({ identity }))
-
+  store.dispatch(Actions.loginSuccessful({ user, identity }))
   const calls = store.getActions()
   // console.log('calls=', calls)
-  t.ok(calls[0].type === Types.SET_IDENTITY)
-  t.deepEqual(calls[0].payload, identity)
-  t.ok(calls[1].type === Api.types.STARTER)
-  t.ok(calls[2].payload.args[0] === '/')
+
+  t.ok(calls[0].type === Types.SET_SETTING)
+  t.deepEqual(calls[0].payload.currentUser, user)
+
+  t.ok(calls[1].type === Types.SET_IDENTITY)
+  t.deepEqual(calls[1].payload, identity)
+
+  t.ok(calls[2].type === Api.types.STARTER)
 })
 
 Test('Logout test', function (t) {

@@ -1,6 +1,6 @@
 'use strict'
 
-import React, { Component, PropTypes } from 'react'
+import React from 'react'
 import ReactDOM from 'react-dom'
 import {
   Router,
@@ -9,6 +9,7 @@ import {
   hashHistory,
   Link
 } from 'react-router'
+import { syncHistoryWithStore } from 'react-router-redux'
 import { Provider, connect } from 'react-redux'
 
 import './global.css'
@@ -21,7 +22,7 @@ import ApiClient from './lib/apiClient'
 
 const client = new ApiClient(window.Config.WS_API_URL)
 client.connect()
-client.send('echo', { value: 123 })
+// client.send('echo', { value: 123 })
 
 // Setup Redux store.
 import configureStore from './lib/configureStore'
@@ -71,11 +72,13 @@ function requireCredentials (nextState, replace, next) {
 
 // Init app.
 Storage.get().then(data => {
-  const identity = data && data.savedIdentity && data.savedIdentity.identity
+  const identity = data && data.savedIdentity
   // Restore saved identity.
   if (identity) {
     console.log('Restoring saved identity:', identity)
     store.dispatch(Api.actions.authToken(identity.accessToken))
+  } else {
+    store.dispatch(Settings.actions.setIsAppLoading(false))
   }
 })
 
@@ -94,8 +97,11 @@ const AppLoader = connect(mapStateToProps)(({ isAppLoading, children }) => {
   return children
 })
 
+// Create an enhanced history that syncs navigation events with the store
+const history = syncHistoryWithStore(hashHistory, store)
+
 const AppRouter = () => (
-  <Router history={hashHistory}>
+  <Router history={history}>
     <Route path='/' component={App} onEnter={requireCredentials}>
       <IndexRoute component={HomePage} />
       <Route path='about' component={AboutPage} />

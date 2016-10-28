@@ -18,7 +18,11 @@ export const setSettings = (payload) => ({
 export const googleLogin = (idToken) =>
   (dispatch) => {
     Api.actions.checkGoogleIdToken(idToken)
-    .then(identity => dispatch(loginSuccessful({ identity })))
+    .then(result => {
+      console.log('Google login successful:', result)
+      dispatch(loginSuccessful(result))
+      dispatch(routeTo('/'))
+    })
     .catch(error => console.error('Google login failed:', error, error.json))
   }
 
@@ -35,32 +39,21 @@ export const logout = () =>
 
 export const loginSuccessful = (payload) =>
   (dispatch, getState) => {
-    Storage.set({ savedIdentity: payload })
-    dispatch(setIdentity(payload))
+    Storage.set({ savedIdentity: payload.identity })
+    dispatch(setCurrentUser(payload.user))
+    dispatch(setIdentity(payload.identity))
     dispatch(Api.actions.starter())
-    dispatch(routeTo('/'))
-  }
-
-export const authTokenSuccessful = (payload) =>
-  (dispatch, getState) => {
-    Storage.set({ savedIdentity: payload })
-    dispatch(setIdentity(payload))
-    dispatch(Api.actions.starter())
-    console.log('Route or don’t route... that is the question !')
-    // dispatch(routeTo('/'))
   }
 
 export const routeTo = (uri) => push(uri)
 export const goBack = () => routeBack()
 
-export const setIdentity = (payload) =>
-  (dispatch, getState) => {
-    dispatch({
-      type: types.SET_IDENTITY,
-      payload: payload.identity
-    })
-  }
+export const setIdentity = (identity) => ({
+  type: types.SET_IDENTITY,
+  payload: identity
+})
 
+export const setCurrentUser = (user) => setSetting('currentUser', user)
 export const setIsAppLoading = (value) => setSetting('isAppLoading', value)
 export const setIsRequestInProgress = (value) => setSetting('isRequestInProgress', value)
 export const setConnectedToServer = (value) => setSetting('isConnectedToServer', value)

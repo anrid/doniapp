@@ -7,6 +7,7 @@ const Google = require('googleapis')
 
 const OAuth2 = Google.auth.OAuth2
 
+const Token = require('./db/token')
 const User = require('./db/user')
 
 const oauth2Client = new OAuth2(
@@ -59,10 +60,20 @@ module.exports = function (app) {
       .then(info => {
         Assert(info && info.aud, 'Missing aud key')
         Assert(info.aud === process.env.DONIAPP_GOOGLE_CLIENT_ID, 'Google client id mismatch')
+
         console.log(`Got token info for ${info.name} (${info.email}).`)
+
         // Create or update user.
         return User.createOrUpdateUserFromGoogleInfo(info)
-        .then(result => res.json(result))
+        .then(user => {
+          return Token.createAccessTokenForUser(user._id)
+          .then(token => {
+            res.json({
+              user,
+              identity: User.createIdentity(user, token)
+            })
+          })
+        })
       })
     })
     .catch(error => {
