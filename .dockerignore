@@ -1,0 +1,10 @@
+# Deps
+node_modules/
+.git/
+.DS_Store
+
+# Skip all code since it’ll be mounted into docker.
+app/
+apiServer/
+build/
+cli/

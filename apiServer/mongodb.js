@@ -18,11 +18,16 @@ function query (func, args) {
 function connect (_url) {
   // mongodb://[username:password@]host1[:port1][/[database]
   const url = _url || process.env.DONIAPP_MONGO_DB_URL
+  console.log('Connecting to', url)
   return MongoClient.connect(url)
   .then(db => {
     _db = db
     console.log('Connected to MongoDB:', _db.s.databaseName)
     return _db
+  })
+  .catch(err => {
+    console.error('Could not connect:', err)
+    throw err
   })
 }
 

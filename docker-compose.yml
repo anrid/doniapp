@@ -1,0 +1,51 @@
+version: '2'
+services:
+  zookeeper:
+    image: wurstmeister/zookeeper
+    ports:
+      - "2181"
+  kafka:
+    image: wurstmeister/kafka
+    ports:
+      - "9092"
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: 192.168.1.101
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+  mongodb:
+    image: mongo:3.3.15
+    ports:
+      - "27017"
+    entrypoint: /entrypoint.sh mongod --storageEngine wiredTiger
+    volumes:
+      - /tmp/data/doniapp-mongo:/data/db
+  app:
+    build: .
+    working_dir: /code
+    command: yarn start
+    environment:
+      - DONIAPP_PORT
+      - DONIAPP_HOST=http://localhost:4002
+      - DONIAPP_GOOGLE_CLIENT_ID
+      - DONIAPP_GOOGLE_CLIENT_SECRET
+      - DONIAPP_GOOGLE_REDIRECT_URL=http://localhost:4002/google-auth-callback
+      - DONIAPP_MONGO_DB_URL=mongodb://mongodb/doniapp_dev
+      - DONIAPP_AWS_KEY
+      - DONIAPP_AWS_SECRET
+      - DONIAPP_AWS_BUCKET
+      - DONIAPP_AWS_REGION
+      - DONIAPP_AWS_PREFIX
+      - DONIAPP_CDN
+    volumes:
+      - ./app:/code/app
+      - ./build:/code/build
+      - ./apiServer:/code/apiServer
+      - ./cli:/code/cli
+    ports:
+      - "8889:8889"
+      - "4002:4002"
+    depends_on:
+      - kafka
+      - mongodb
+      - zookeeper

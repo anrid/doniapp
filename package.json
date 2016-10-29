@@ -5,7 +5,7 @@
   "main": "index.js",
   "repository": "git@github.com:anrid/doniapp.git",
   "scripts": {
-    "app": "webpack-dev-server --hot --inline --watch --port 8889 --quiet --content-base build/",
+    "app": "webpack-dev-server --host 0.0.0.0 --hot --inline --watch --port 8889 --quiet --content-base build/",
     "test-api-once": "tape ./apiServer/**/*_test.js",
     "test-watch": "tape-watch ./app/**/__tests__/*.js -r babel-register",
     "test-once": "tape ./app/**/__tests__/*.js -r babel-register",
