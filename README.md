@@ -2,13 +2,25 @@
 
 An app of sorts.
 
-## Setup (Hipster)
+### Setup (For Rad Hipsters)
 
 ```
 docker-compose up
 ```
 
-## Setup (Old School)
+### Run tests inside docker
+
+```
+docker-compose run app yarn test
+```
+
+### Development URL
+
+**http://localhost:8889**
+
+### Setup (For Old School Has-Beens**)
+
+***i.e. everyone in the web development community every 6 months or so.*
 
 ```
 # yarn > npm, so ..
@@ -22,14 +34,4 @@ yarn install
 
 # Run the app in development mode.
 yarn start
-```
-
-## Development URL
-
-http://localhost:8889
-
-## Release to production
-
-```
-yarn release
 ```
